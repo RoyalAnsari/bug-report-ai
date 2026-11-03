@@ -1,170 +1,314 @@
-# Bug Report Classifier and Duplicate Detector
+# Bug Report AI
 
-A small web application for QA teams. You upload a CSV file of bug reports. The app:
+A course project that helps triage bug reports. It does two things:
 
-1. **Classifies** each report by severity (blocker, critical, major, normal, minor, trivial).
-2. **Suggests possible duplicates** (reports that describe the same problem in similar words).
-3. Lets a **person confirm or reject** every suggested duplicate.
-4. Shows charts, search and filters, and **exports the results to CSV**.
+1. **Severity prediction**: predicts how severe a bug report is (6 classes) and lets a person confirm or correct the prediction.
+2. **Duplicate detection**: finds reports that look similar to a given report, using sentence embeddings, and lets a person confirm or reject each suggestion.
 
-The machine only suggests. A person always decides. Machine output and human decisions are stored in separate columns.
+Around these two models there is a web app: upload reports from a CSV file, browse and search them, predict severity for one report or for all reports at once, review predictions and duplicate suggestions, and look at model performance.
 
-Built with Python, scikit-learn, Streamlit and Plotly. It uses a public dataset, not private company tickets.
+> **Status: course prototype, not production-ready.**
+> There is no authentication, and the severity model is weak (see [Model quality](#model-quality)). Do not use it to make real decisions.
 
-## Screenshots
-Add your screenshots to `docs/screenshots/` and list them here after you run the app:
-- Welcome page
-- Overview tab (summary cards and charts)
-- Duplicate review tab
-- Export tab
+---
+
+## Contents
+
+- [Tech stack](#tech-stack) (a longer explanation is in [HOW_IT_WORKS.md](HOW_IT_WORKS.md))
+- [Project structure](#project-structure)
+- [Data](#data)
+- [Model quality](#model-quality)
+- [Features](#features)
+- [Setup on Windows](#setup-on-windows)
+- [Running the project](#running-the-project)
+- [Running the tests](#running-the-tests)
+- [Bulk predict](#bulk-predict)
+- [Troubleshooting](#troubleshooting)
+- [Known limitations](#known-limitations)
+- [Roadmap](#roadmap)
+
+---
+
+## Tech stack
+
+| Part | Technology |
+| --- | --- |
+| Severity model | TF-IDF + LinearSVC (scikit-learn) |
+| Duplicate model | `sentence-transformers/all-MiniLM-L6-v2` embeddings + cosine similarity |
+| Backend | FastAPI (Python), MongoDB Atlas |
+| Frontend | React, TypeScript, Tailwind CSS (Vite) |
+| Tests | pytest (backend and ML), Vitest (frontend) |
+
+## Project structure
+
+```
+bug-report-ai/
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/endpoints/   # API routes (reports, uploads, predictions, reviews, duplicates, dashboard, settings, ...)
+│   │   ├── repositories/       # all MongoDB access
+│   │   ├── schemas/            # request and response models
+│   │   ├── services/           # business logic
+│   │   └── main.py             # FastAPI app
+│   ├── tests/                  # backend tests
+│   ├── check_db.py             # checks the MongoDB connection
+│   ├── init_db.py              # creates database indexes, can import sample reports
+│   ├── register_models.py      # stores model metrics for the Model performance page
+│   ├── demo_inference.py       # small prediction demo
+│   └── .env.example            # copy to .env and fill in
+├── frontend/
+│   └── src/                    # pages, components, services, tests
+├── ml/
+│   ├── data/                   # raw and processed (train / val / test) data
+│   ├── artifacts/              # trained models and the duplicate-search index
+│   └── tests/                  # data and model tests
+├── sample_data/                # small example CSV files for testing the upload page
+└── README.md
+```
+
+## Data
+
+- Source: the Bugzilla / Eclipse bug report dataset from Hugging Face.
+- Raw file: `ml\data\raw\bugzilla_eclipse\filtered_data.xlsx - Sheet1.csv`. Cleaned splits are in `ml\data\processed` (`train.csv`, `val.csv`, `test.csv`).
+- Raw dataset: 88,682 rows, 5 columns, 6 severity labels, no missing values.
+- Class balance is very uneven: `normal` is about 81.4% of the rows and `blocker` only about 0.9%.
+- After cleaning: 87,716 rows.
+- Split (stratified, seed 42, no overlap between sets): 70,172 train, 8,772 validation, 8,772 test.
+
+The severity labels are: `blocker`, `critical`, `major`, `normal`, `minor`, `trivial`.
+
+## Model quality
+
+**Severity model (TF-IDF + LinearSVC)**
+
+- Test macro F1: **0.416** (0.422 with the improved version).
+- `critical` and `normal` work reasonably well. `major`, `minor` and `trivial` are weak.
+- Class weights helped. Resampling did not.
+- Because of this, the app marks low-confidence predictions as **Needs review** and asks a person to confirm or correct them. The review margin can be changed on the Settings page.
+
+**Duplicate model (MiniLM embeddings)**
+
+- Embeddings were built for all 87,716 reports and a cosine-similarity index is used to find candidates.
+- The dataset has **no verified duplicate pairs**, so precision and recall could not be measured.
+- The default similarity threshold (`0.80`) has not been tested. The score is a cosine similarity, **not a probability**.
+- Every suggestion therefore needs a human to confirm or reject it.
 
 ## Features
-| Feature | Where |
-|---|---|
-| CSV upload and validation with clear error messages | `src/data_loader.py` |
-| Text cleaning (lowercase, remove links and symbols, optional stemming) | `src/preprocessing.py` |
-| Severity classification: TF-IDF with Logistic Regression, Naive Bayes, Linear SVM | `src/classifier.py`, `src/evaluation.py`, `src/train_model.py` |
-| Confidence score (only for models that support it) | `src/classifier.py` |
-| Duplicate suggestions: TF-IDF with cosine similarity and an adjustable threshold | `src/duplicate_detector.py` |
-| Human review: confirm, reject, undo; decisions are saved | `src/review.py` |
-| Search, filter, sort, chart data, CSV export | `src/reporting.py` |
-| One function joining all steps | `src/pipeline.py` |
-| Streamlit interface | `app.py` |
 
-## Dataset
-The project uses the Hugging Face dataset **`blak002/Bugzilla_Eclipse_Bug_Reports_Dataset`**, a copy of `AliArshad/Bugzilla_Eclipse_Bug_Reports_Dataset`. It is a processed part of the Eclipse and Mozilla defect tracking dataset. Please cite the original paper:
+**Backend (FastAPI)**
 
-> Lamkanfi, A., Perez, J., Demeyer, S. (2013). *The Eclipse and Mozilla defect tracking dataset: a genuine dataset for mining bug information.* 10th Working Conference on Mining Software Repositories (MSR). doi:10.1109/MSR.2013.6624028
+- Health check and model metadata.
+- Reports: list, filter, search, sort, pagination, create, update, delete. Deleting a report also deletes its predictions, duplicate suggestions and review feedback.
+- CSV upload with preview and import. Importing the same file again does not create duplicates.
+- Severity prediction for one report, and review (confirm or correct).
+- Bulk severity prediction (see [Bulk predict](#bulk-predict)).
+- Duplicate candidates for a report, and a duplicate review queue.
+- Dashboard numbers.
+- Settings (review margin and duplicate defaults).
+- Consistent error format, CORS, and OpenAPI docs (the app header has an **API docs** link).
 
-What the dataset contains (columns): `Project`, `Bug ID`, `Severity Label`, `Resolution Status`, `Short Description`. It has about 88.7 thousand rows.
+**Frontend (React)**
 
-Important facts:
-- There is **only a short title**, no long description.
-- There is **no component column**. This project predicts the **severity**.
-- There are **no "duplicate of" links**, so duplicate quality cannot be scored automatically.
-- The dataset card does not state a licence. The data is **not included** in this repository. Check the licence before sharing it.
+- **Dashboard**: totals, severity chart, pending reviews, duplicate suggestions.
+- **Reports**: search, filters, sorting, pagination, detail page with *Predict severity* and *Review*.
+- **Upload**: drag and drop, preview, column mapping, row errors, import.
+- **Bulk predict**: predict all reports that have no prediction yet, with progress and a Stop button.
+- **Duplicates**: candidates per report, plus a separate review queue.
+- **Model performance**: F1, precision, recall, confusion matrix.
+- **Settings**, **System status**.
 
-`src/dataset_prep.py` converts the dataset to this project's format (`bug_id`, `title`, `description`, `component`). The severity is stored in the `component` column, and the project name is added to the bug id because different projects reuse the same numbers.
+## Setup on Windows
 
-## Setup (Windows, VS Code terminal, inside this folder)
+You need: Python 3, Node.js (with npm), and a MongoDB Atlas cluster (the free tier is enough).
+
+The commands below work in **cmd**. In PowerShell, replace `%USERPROFILE%` with `$env:USERPROFILE`, and use `.venv\Scripts\Activate.ps1` to activate the virtual environment.
+
+**1. Open a terminal in the project folder**
+
+```
+cd path\to\bug-report-ai
+```
+
+**2. Create and activate a virtual environment**
+
 ```
 python -m venv .venv
 .venv\Scripts\activate
+```
+
+**3. Install the Python packages**
+
+```
 pip install -r requirements.txt
 ```
 
-## Get the data and train the model (once)
-```
-python -m src.dataset_prep
-python -m src.train_model
-```
-Useful options for training:
-| Option | Meaning |
-|---|---|
-| `--sample 20000` | Use only 20,000 rows (quick trial) |
-| `--stem` | Apply stemming (needs NLTK) |
-| `--no-balance` | Do not use balanced class weights |
-| `--with-confidence` | Only try models that give a confidence score |
+(`requirements.txt` is in the project root.)
 
-Training writes these files to `models/`: `classifier.joblib` (the model), `model_comparison.csv`, `test_confusion_matrix.csv` and `test_scores.json`. Every run overwrites them, so copy the folder first if you want to keep an old result.
+**4. Install the frontend packages**
 
-## Run the app
 ```
-python -m streamlit run app.py
-```
-Press **Try the demo file** on the first page, or upload your own CSV in the sidebar.
-
-A manual check of duplicate suggestions on the real dataset (prints pairs of titles):
-```
-python try_duplicates.py
+npm --prefix frontend install
 ```
 
-## Input file format
-A UTF-8 CSV file with a header row.
+**5. Configure the database**
 
-| Column | Required | Notes |
-|---|---|---|
-| `bug_id` | Yes | Text, unique |
-| `title` | Yes | Short summary |
-| `description` | Yes | May be empty if the title exists |
-| `component` | No | The true label from your file, used for filtering |
+Copy `backend\.env.example` to `backend\.env` and fill in your MongoDB Atlas connection details:
 
-Rows with no id or no text, and repeated ids, are removed with a warning. In Excel, use Save As and choose **CSV UTF-8**.
-
-## How it works
 ```
-CSV -> validate -> clean text -> classify -> find duplicates -> human review -> charts / export
+copy backend\.env.example backend\.env
 ```
-- **Training data split:** 70% train, 15% validation, 15% test. Models are compared on validation. The test set is used once, for the chosen model.
-- **Imbalanced classes:** about 81% of the reports are "normal", so the models use balanced class weights and are compared by **macro F1** (every class counts equally), not by accuracy.
-- **Repeated titles** are removed before splitting, so the same title cannot appear in both train and test.
-- **Random seed** is fixed (42), so results repeat.
 
-## Results (recorded from a training run on the full dataset, no stemming)
-These numbers come from the author's own run and are **not** guaranteed for other data or settings. If you retrain, your numbers may differ.
+Settings in `backend\.env`:
 
-| Measure (test set, 13,195 reports) | Value |
-|---|---|
-| Best model (chosen on validation) | Linear SVM |
-| Macro F1 | 0.352 |
-| Accuracy | 0.737 |
-| Accuracy of always predicting "normal" | 0.814 |
+| Variable | Meaning | Example |
+| --- | --- | --- |
+| `MONGODB_URI` | MongoDB Atlas connection string (contains your password) | `mongodb+srv://...` |
+| `MONGODB_DB` | Database name | `bug_report_ai` |
+| `CORS_ORIGINS` | Frontend address that may call the API | `http://localhost:5173` |
+| `REVIEW_MARGIN` | Predictions with a margin below this value are marked *Needs review* (can also be changed on the Settings page) | `0.25` |
+| `LOAD_MODELS` | Whether the backend loads the ML models when it starts | `true` |
 
-The model finds **critical** bugs reasonably well (about 68% of them) and is weak on major, minor and trivial. Linear SVM does not give a confidence score; train with `--with-confidence` to get one. A run with stemming gave almost the same macro F1 (0.360 on a slightly different test set), so stemming is not used.
+Never commit `backend\.env` to Git, because it contains your database password. It is already listed in `.gitignore`.
 
-There are no accuracy figures for duplicate detection, because the dataset has no duplicate labels. Check the suggestions by eye.
+In Atlas you must also:
 
-## Tests
-```
-python -m pytest -v
-```
-Build the test documents from real results:
-```
-python -m pytest -v --junitxml=docs/test_results.xml
-python -m tools.doc_builder cases
-python -m tools.doc_builder report
-```
-This writes `docs/test_cases.md` and `docs/test_report.md`. Test levels: unit, integration, end-to-end, and regression (frozen function interfaces). The Streamlit screen itself is checked with the manual tests in `docs/test_plan.md`.
+- create a database user (username and password), and
+- add your current IP address under **Network Access** (see [Troubleshooting](#troubleshooting)).
 
-## Project structure
+**6. Check the database connection**
+
 ```
-bug-report-classifier/
-    app.py                     Streamlit interface (shows things only)
-    requirements.txt
-    README.md
-    pytest.ini
-    try_duplicates.py          manual check of duplicate suggestions
-    .streamlit/config.toml     theme and settings
-    data/
-        sample_bug_reports.csv    tiny test file
-        demo_bug_reports.csv      20 made-up reports with 4 duplicate pairs
-        bug_reports.csv           created by dataset_prep (not in Git)
-    models/                    created by training (not in Git)
-    src/
-        data_loader.py  dataset_prep.py  preprocessing.py  classifier.py
-        evaluation.py   train_model.py   duplicate_detector.py
-        review.py       pipeline.py      reporting.py
-    tests/                     unit, integration, end-to-end, interface tests
-    tools/doc_builder.py       builds test documents from real test results
-    docs/
-        FRD.md  test_plan.md  test_cases.md  bug_log.md
+cd backend
+python check_db.py
+cd ..
 ```
-Planned for the final documents: `test_report.md` (generated), SRS and `final_report.md`.
+
+It should connect without an error before you start the backend.
+
+**7. Create the database indexes and (optionally) load sample reports**
+
+Run this once from the `backend` folder:
+
+```
+cd backend
+python init_db.py --import-sample 2000
+cd ..
+```
+
+- `init_db.py` creates the collections' indexes in MongoDB and prints them.
+- `--import-sample 2000` also imports 2,000 randomly chosen reports from `ml\data\processed` (train, validation and test files), so the app has data to show. Use another number for more or fewer reports, or leave the option out to create only the indexes. Running it again does not create duplicates.
+
+**8. Register the trained models**
+
+This stores the model information (such as test macro F1) that the *Model performance* page shows. It needs the trained models in `ml\artifacts` (see [Data and model files are not in Git](#data-and-model-files-are-not-in-git)).
+
+```
+cd backend
+python register_models.py
+cd ..
+```
+
+It prints one line per model, for example the severity model with its test macro F1. If it says a file was not found, the files in `ml\artifacts` are missing.
+
+## Data and model files are not in Git
+
+`.gitignore` excludes `ml\data\raw\` (the raw dataset) and `ml\artifacts\` (trained models and the duplicate-search index) because they are large. After cloning the repository you must copy these folders from the original machine, or download the dataset and rebuild the models, before the backend can predict and before the ML tests can pass.
+
+## Running the project
+
+Use two terminals.
+
+**Terminal 1: backend** (from the `backend` folder, with the virtual environment active)
+
+```
+cd backend
+uvicorn app.main:app --reload --port 8000
+```
+
+The backend must be started with the models loaded; the first start can take a while because the embedding model is loaded.
+
+**Terminal 2: frontend**
+
+```
+npm --prefix frontend run dev
+```
+
+Open the address that Vite prints (usually `http://localhost:5173`).
+
+For a production build of the frontend: `npm --prefix frontend run build`.
+
+## Running the tests
+
+From the project root:
+
+```
+python -m pytest ml\tests backend\tests -q
+npm --prefix frontend run test
+npm --prefix frontend run build
+```
+
+Latest results: **192** backend and ML tests passed, **90** frontend tests passed, and the frontend build succeeds. The backend tests do not use a real MongoDB; they use fakes. There are no integration tests against a real database yet.
+
+## Bulk predict
+
+Page: `/predict`.
+
+1. Open **Bulk predict**. Three cards show total reports, reports with a prediction, and reports without one.
+2. Choose **Reports per step** (100, 200 or 500). The page calls the backend repeatedly in small steps, so a laptop with 8 GB of RAM is not overloaded.
+3. Click **Predict all unpredicted reports**. A progress bar shows how many reports are done.
+4. **Stop** finishes the current step and then stops.
+5. It is safe to run again: only reports that have no prediction are predicted, so after a Stop it continues where it left off.
+6. At the end a summary shows how many reports were predicted, how many need review, and how many are still without a prediction.
+
+Backend endpoints:
+
+- `GET /api/v1/predictions/bulk/status`
+- `POST /api/v1/predictions/bulk` (1 to 500 reports per call; the model works in batches of 256 internally)
+
+## Troubleshooting
+
+**The backend cannot connect to MongoDB Atlas**
+
+- Open Atlas, go to **Network Access**, and add your current IP address. Home and mobile networks often change IP address, so this has to be updated when it changes. For a quick test you can allow `0.0.0.0/0`, but remove it afterwards.
+- Check that the username and password in your connection string are correct. If the password contains special characters, URL-encode them.
+- Some networks block port **27017**, which MongoDB uses. If `python check_db.py` hangs or times out, try another network (for example a phone hotspot).
+- Run `python check_db.py` again after each change.
+
+**"No module named ..." or import errors**
+
+- The virtual environment is probably not active. The prompt should start with `(.venv)`. Activate it and try again.
+- Run the tests from the project root, not from inside `backend`.
+
+**`%USERPROFILE%` or `Select-String` "is not recognized"**
+
+- You are mixing cmd and PowerShell. `%USERPROFILE%` and `findstr` are cmd; `$env:USERPROFILE` and `Select-String` are PowerShell.
+
+**The page shows old content or a menu item is missing**
+
+- Restart both the backend and the frontend, then hard refresh the browser with `Ctrl + Shift + R`. New API endpoints only appear after the backend restarts.
+
+**Port already in use**
+
+- Another copy is still running. Stop it with `Ctrl + C`, or run on another port (for example `--port 8001`).
+
+**Bulk predict cards do not load**
+
+- The cards read from MongoDB. Check the database connection first.
 
 ## Known limitations
-- Only a **short title** is available, so severity is hard to predict. Expect modest results.
-- Duplicate detection uses **shared words** (TF-IDF). It misses reports with the same meaning but different words, and it can score two different reports highly when only a small detail differs (for example "X64" and "ARM", or two version numbers). A person must check each suggestion.
-- Only **English letters and digits** are used. Text in other languages, such as Urdu, is removed during cleaning, and a report with no English text is dropped with a warning.
-- Files must be **UTF-8** and are limited to 20,000 reports per analysis.
-- Review decisions are saved in one local file (`data/review_decisions.csv`), shared by everyone who uses that copy of the app. There are no user accounts.
-- The model is trained on Eclipse and Mozilla titles. It may not suit other projects.
 
-## Future improvements
-Sentence embeddings (Sentence Transformers) for duplicates with different wording, a second dataset with duplicate links to measure duplicate quality, user accounts, and a long description field.
+- No authentication or authorization. Anyone who can reach the backend can read and change data.
+- Severity model quality is low (macro F1 about 0.42), especially for `major`, `minor` and `trivial`.
+- Duplicate detection is untested against labelled data; precision and recall are unknown.
+- Backend tests use fakes; there are no integration tests against a real MongoDB yet.
+- The main frontend JavaScript file is large (about 691 kB); route-level lazy loading is not done yet.
+- Docker is not set up yet.
 
-## Deployment (optional)
-The app can run on Azure App Service (Linux). It needs a paid plan (B1 or higher) because Streamlit needs websockets, a `requirements.txt` with the same package versions that trained the model, and the startup command:
-```
-python -m streamlit run app.py --server.port 8000 --server.address 0.0.0.0 --server.headless true
-```
-Live address: add it here after you deploy.
+## Roadmap
+
+- Lazy loading for the frontend routes.
+- Integration tests with a real MongoDB.
+- EDA notebook for the dataset (missing values, duplicates, class balance).
+- Docker and Docker Compose (backend, frontend, MongoDB, health checks).
+- Optional: fine-tune a DistilBERT model for severity (slow on a CPU-only laptop).
+- Optional: train a duplicate model once labelled duplicate pairs are available.
