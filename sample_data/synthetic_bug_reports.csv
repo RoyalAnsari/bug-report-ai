@@ -1,0 +1,9 @@
+Issue ID,Summary,Severity,Product
+S-1,Synthetic: app crashes when exporting report to PDF,major,Demo App
+S-2,Synthetic: login button stays disabled after password reset,critical,Demo App
+S-3,Synthetic: typo in the settings page title,trivial,Demo App
+S-4,Synthetic: dark mode colors hard to read in sidebar,minor,Demo Web
+S-5,Synthetic: search returns no results for exact title,normal,Demo Web
+S-6,Synthetic: wrong severity label example,urgent,Demo Web
+S-7,,major,Demo Web
+S-8,Synthetic: export to PDF causes application crash,major,Demo App

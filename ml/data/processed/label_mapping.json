@@ -1,0 +1,8 @@
+{
+  "blocker": 0,
+  "critical": 1,
+  "major": 2,
+  "normal": 3,
+  "minor": 4,
+  "trivial": 5
+}

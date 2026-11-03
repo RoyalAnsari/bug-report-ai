@@ -1,0 +1,41 @@
+{
+  "rows_start": 88682,
+  "removed_unknown_label": 0,
+  "removed_short_or_empty_text": 9,
+  "removed_duplicate_bug_id": 266,
+  "removed_same_text_conflicting_label": 136,
+  "removed_same_text_same_label": 555,
+  "rows_end": 87716,
+  "seed": 42,
+  "split_sizes": {
+    "train": 70172,
+    "val": 8772,
+    "test": 8772
+  },
+  "class_counts": {
+    "train": {
+      "normal": 57148,
+      "critical": 4662,
+      "major": 3612,
+      "minor": 2480,
+      "trivial": 1642,
+      "blocker": 628
+    },
+    "val": {
+      "normal": 7144,
+      "critical": 583,
+      "major": 451,
+      "minor": 310,
+      "trivial": 206,
+      "blocker": 78
+    },
+    "test": {
+      "normal": 7144,
+      "critical": 582,
+      "major": 452,
+      "minor": 310,
+      "trivial": 205,
+      "blocker": 79
+    }
+  }
+}

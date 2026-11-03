@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+ml/data/raw/
+ml/artifacts/
+node_modules/
+dist/
+*.zip
+_backup/
+_stray_backend/
+-Force/
+.ipynb_checkpoints/
