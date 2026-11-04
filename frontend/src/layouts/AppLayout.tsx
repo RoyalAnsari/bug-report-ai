@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
+import { useAuth } from '../auth/useAuth'
 import { docsUrl } from '../services/api'
 
 const navItems = [
-  { to: '/', label: 'Dashboard', end: true },
-  { to: '/reports', label: 'Reports', end: false },
-  { to: '/predict', label: 'Bulk predict', end: false },
-  { to: '/duplicates', label: 'Duplicates', end: false },
-  { to: '/models', label: 'Model performance', end: false },
-  { to: '/upload', label: 'Upload', end: false },
-  { to: '/settings', label: 'Settings', end: false },
-  { to: '/status', label: 'System status', end: false },
+  { to: '/', label: 'Dashboard', end: true, adminOnly: false, needsLogin: false },
+  { to: '/reports', label: 'Reports', end: false, adminOnly: false, needsLogin: false },
+  { to: '/predict', label: 'Bulk predict', end: false, adminOnly: true, needsLogin: false },
+  { to: '/duplicates', label: 'Duplicates', end: false, adminOnly: false, needsLogin: false },
+  { to: '/models', label: 'Model performance', end: false, adminOnly: false, needsLogin: false },
+  { to: '/upload', label: 'Upload', end: false, adminOnly: true, needsLogin: false },
+  { to: '/settings', label: 'Settings', end: false, adminOnly: true, needsLogin: false },
+  { to: '/users', label: 'Users', end: false, adminOnly: true, needsLogin: true },
+  { to: '/status', label: 'System status', end: false, adminOnly: false, needsLogin: false },
+  { to: '/account', label: 'Account', end: false, adminOnly: false, needsLogin: true },
 ]
 
 function linkClass({ isActive }: { isActive: boolean }) {
@@ -20,6 +23,11 @@ function linkClass({ isActive }: { isActive: boolean }) {
 
 export default function AppLayout() {
   const [open, setOpen] = useState(false)
+  const auth = useAuth()
+  const isAdmin = auth.user?.role === 'admin'
+  const visibleItems = navItems.filter(
+    (item) => (!item.adminOnly || isAdmin) && (!item.needsLogin || auth.authEnabled),
+  )
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -32,7 +40,7 @@ export default function AppLayout() {
         <div className="mb-6 px-3 text-lg font-semibold">Bug Report AI</div>
         <nav aria-label="Main">
           <ul className="space-y-1">
-            {navItems.map((item) => (
+            {visibleItems.map((item) => (
               <li key={item.to}>
                 <NavLink to={item.to} end={item.end} className={linkClass} onClick={() => setOpen(false)}>
                   {item.label}
@@ -60,14 +68,30 @@ export default function AppLayout() {
             ☰
           </button>
           <span className="font-medium md:hidden">Bug Report AI</span>
-          <a
-            href={docsUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="ml-auto rounded-md px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
-          >
-            API docs
-          </a>
+          <div className="ml-auto flex items-center gap-2">
+            {auth.authEnabled && auth.user && (
+              <>
+                <span className="hidden text-sm text-slate-600 sm:inline">
+                  {auth.user.name} ({auth.user.role})
+                </span>
+                <button
+                  type="button"
+                  onClick={auth.logout}
+                  className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                >
+                  Sign out
+                </button>
+              </>
+            )}
+            <a
+              href={docsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
+            >
+              API docs
+            </a>
+          </div>
         </header>
         <main className="mx-auto max-w-6xl p-4 md:p-6">
           <Outlet />
