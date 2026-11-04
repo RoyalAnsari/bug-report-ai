@@ -22,6 +22,7 @@ load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 def create_app(settings=None):
     settings = settings or Settings.from_env()
+    settings.validate_for_startup()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -57,12 +58,16 @@ def create_app(settings=None):
 
     app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
     app.state.config = settings
+    if settings.auth_enabled:
+        logger.info("Authentication is ON.")
+    else:
+        logger.warning("Authentication is OFF (AUTH_ENABLED=false). Use this only for development.")
 
     app.add_middleware(
         CORSMiddleware,
         allow_origins=list(settings.cors_origins),
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-        allow_headers=["*"],
+        allow_headers=["Authorization", "Content-Type"],
     )
 
     @app.exception_handler(StarletteHTTPException)
@@ -70,6 +75,7 @@ def create_app(settings=None):
         return JSONResponse(
             status_code=exc.status_code,
             content={"error": {"code": exc.status_code, "message": str(exc.detail)}},
+            headers=getattr(exc, "headers", None),
         )
 
     @app.exception_handler(RequestValidationError)

@@ -5,6 +5,7 @@ PREDICTIONS = "predictions"
 DUPLICATE_SUGGESTIONS = "duplicate_suggestions"
 REVIEW_FEEDBACK = "review_feedback"
 MODEL_VERSIONS = "model_versions"
+USERS = "users"
 
 INDEXES = {
     BUG_REPORTS: [
@@ -28,6 +29,9 @@ INDEXES = {
     ],
     MODEL_VERSIONS: [
         IndexModel([("name", ASCENDING), ("version", ASCENDING)], name="name_version_unique_idx", unique=True),
+    ],
+    USERS: [
+        IndexModel([("email", ASCENDING)], name="email_unique_idx", unique=True),
     ],
 }
 

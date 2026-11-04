@@ -2,7 +2,7 @@ from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 
-from app.api.deps import get_db
+from app.api.deps import get_db, require_admin
 from app.repositories import report_crud as repo
 from app.schemas.reports import ReportCreate, ReportList, ReportOut, ReportUpdate, Severity
 
@@ -41,7 +41,7 @@ async def get_reports(
     )
 
 
-@router.post("/reports", response_model=ReportOut, status_code=201)
+@router.post("/reports", response_model=ReportOut, status_code=201, dependencies=[Depends(require_admin)])
 async def create_report(body: ReportCreate, db=Depends(get_db)):
     report = await repo.create_report(db, body.model_dump())
     if report is None:
@@ -65,7 +65,7 @@ async def update_report(report_id: str, body: ReportUpdate, db=Depends(get_db)):
     return report
 
 
-@router.delete("/reports/{report_id}", status_code=204)
+@router.delete("/reports/{report_id}", status_code=204, dependencies=[Depends(require_admin)])
 async def delete_report(report_id: str, db=Depends(get_db)):
     if not await repo.delete_report(db, report_id):
         raise HTTPException(status_code=404, detail="Report not found")

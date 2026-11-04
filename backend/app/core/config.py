@@ -14,6 +14,10 @@ class Settings:
     load_models: bool = True
     mongodb_uri: str = field(default="", repr=False)
     mongodb_db: str = "bug_report_ai"
+    # Login. Code ka default False hai (tests ke liye), lekin from_env() mein default True hai.
+    auth_enabled: bool = False
+    jwt_secret: str = field(default="", repr=False)
+    access_token_minutes: int = 60
 
     @classmethod
     def from_env(cls):
@@ -24,4 +28,17 @@ class Settings:
             load_models=os.getenv("LOAD_MODELS", "true").lower() != "false",
             mongodb_uri=os.getenv("MONGODB_URI", ""),
             mongodb_db=os.getenv("MONGODB_DB", "bug_report_ai"),
+            auth_enabled=os.getenv("AUTH_ENABLED", "true").lower() != "false",
+            jwt_secret=os.getenv("JWT_SECRET", ""),
+            access_token_minutes=int(os.getenv("ACCESS_TOKEN_MINUTES", "60")),
         )
+
+    def validate_for_startup(self):
+        """Server shuru hone se pehle ghalat ya kamzor settings pakadta hai."""
+        if self.auth_enabled and len(self.jwt_secret) < 32:
+            raise ValueError(
+                "JWT_SECRET must be set and at least 32 characters long when AUTH_ENABLED is true. "
+                "Create one with: python -c \"import secrets; print(secrets.token_urlsafe(48))\""
+            )
+        if self.access_token_minutes < 1:
+            raise ValueError("ACCESS_TOKEN_MINUTES must be at least 1")
