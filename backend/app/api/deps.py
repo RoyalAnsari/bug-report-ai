@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import timezone
 
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -33,6 +34,19 @@ def _unauthorized(message="Not authenticated"):
     return HTTPException(status_code=401, detail=message, headers={"WWW-Authenticate": "Bearer"})
 
 
+def _token_predates_password_change(payload, user):
+    changed = user.get("password_changed_at")
+    if changed is None:
+        return False
+    if changed.tzinfo is None:
+        changed = changed.replace(tzinfo=timezone.utc)
+    try:
+        issued = float(payload.get("iat"))
+    except (TypeError, ValueError):
+        return True
+    return issued < changed.timestamp()
+
+
 async def get_current_user(
     request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
@@ -49,6 +63,8 @@ async def get_current_user(
     db = get_db(request)
     user = await users_repo.get_by_id(db, payload["sub"])
     if user is None or not user.get("is_active", False):
+        raise _unauthorized("Invalid or expired token")
+    if _token_predates_password_change(payload, user):
         raise _unauthorized("Invalid or expired token")
     return CurrentUser(id=user["_id"], email=user["email"], name=user["name"], role=user["role"])
 

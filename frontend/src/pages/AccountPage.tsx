@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useAuth } from '../auth/useAuth'
+import { setFlash } from '../lib/flash'
 import { errorMessage } from '../services/api'
 import { changePassword } from '../services/auth'
 
@@ -13,7 +14,6 @@ export default function AccountPage() {
   const [confirm, setConfirm] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [done, setDone] = useState(false)
 
   if (!auth.authEnabled || !auth.user) {
     return <p className="text-sm text-slate-600">Login is switched off on this server, so there is no account to manage.</p>
@@ -21,7 +21,6 @@ export default function AccountPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setDone(false)
     if (next.length < MIN_PASSWORD) {
       setError(`The new password must be at least ${MIN_PASSWORD} characters long.`)
       return
@@ -38,10 +37,9 @@ export default function AccountPage() {
     setSaving(true)
     try {
       await changePassword(current, next)
-      setCurrent('')
-      setNext('')
-      setConfirm('')
-      setDone(true)
+      // Purane tokens band ho chuke hain, is liye naye password se dobara login karna hoga.
+      setFlash('Your password was changed. Please sign in with the new password.')
+      auth.logout()
     } catch (problem) {
       setError(errorMessage(problem))
     } finally {
@@ -64,11 +62,6 @@ export default function AccountPage() {
         {error && (
           <p role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
             {error}
-          </p>
-        )}
-        {done && (
-          <p role="status" className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
-            Password changed.
           </p>
         )}
 
@@ -102,7 +95,9 @@ export default function AccountPage() {
             onChange={(event) => setNext(event.target.value)}
             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
           />
-          <p className="mt-1 text-xs text-slate-500">At least {MIN_PASSWORD} characters.</p>
+          <p className="mt-1 text-xs text-slate-500">
+            At least {MIN_PASSWORD} characters. You will be signed out and must sign in again.
+          </p>
         </div>
 
         <div>

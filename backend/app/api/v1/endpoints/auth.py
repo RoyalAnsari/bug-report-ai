@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from starlette.concurrency import run_in_threadpool
 
@@ -9,6 +11,13 @@ from app.schemas.auth import AuthConfig, LoginRequest, MeOut, PasswordChange, To
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 WRONG_LOGIN = "Incorrect email or password"
+LOCKED_MESSAGE = "Too many failed sign-in attempts. Try again later."
+
+
+def _as_utc(value):
+    if value is not None and value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
 
 
 @router.get("/config", response_model=AuthConfig)
@@ -28,8 +37,17 @@ async def login(body: LoginRequest, request: Request, db=Depends(get_db)):
         await run_in_threadpool(verify_dummy, body.password)
         raise HTTPException(status_code=401, detail=WRONG_LOGIN)
 
+    locked_until = _as_utc(user.get("locked_until"))
+    now = datetime.now(timezone.utc)
+    if locked_until is not None and locked_until > now:
+        retry_after = int((locked_until - now).total_seconds()) + 1
+        raise HTTPException(status_code=429, detail=LOCKED_MESSAGE, headers={"Retry-After": str(retry_after)})
+
     password_ok = await run_in_threadpool(verify_password, body.password, user["password_hash"])
-    if not password_ok or not user.get("is_active", False):
+    if not password_ok:
+        await users_repo.register_failed_login(db, user["_id"], config.max_failed_logins, config.lockout_minutes)
+        raise HTTPException(status_code=401, detail=WRONG_LOGIN)
+    if not user.get("is_active", False):
         raise HTTPException(status_code=401, detail=WRONG_LOGIN)
 
     await users_repo.touch_login(db, user["_id"])

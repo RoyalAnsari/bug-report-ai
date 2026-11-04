@@ -33,7 +33,8 @@ def create_access_token(user_id, role, secret, minutes, now=None):
     payload = {
         "sub": user_id,
         "role": role,
-        "iat": int(now.timestamp()),
+        # iat poore second ki jagah asli waqt hai, taake "password badalne se pehle ka token" sahi pakda jaye.
+        "iat": now.timestamp(),
         "exp": int((now + timedelta(minutes=minutes)).timestamp()),
         "jti": uuid.uuid4().hex,
     }

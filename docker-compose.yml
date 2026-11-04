@@ -1,0 +1,29 @@
+# Apne computer par poora app chalane ke liye (Docker chahiye): docker compose up --build
+# Backend aap ki backend/.env use karta hai (MongoDB Atlas, JWT_SECRET wagaira).
+# Models ml/artifacts se mount hote hain (image mein nahi hote).
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file: backend/.env
+    environment:
+      CORS_ORIGINS: http://localhost:8080
+      ENABLE_DOCS: "false"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml/artifacts:/app/ml/artifacts:ro
+
+  frontend:
+    build:
+      context: frontend
+      args:
+        VITE_API_URL: http://localhost:8000/api/v1
+        VITE_SHOW_API_DOCS: "false"
+        API_ORIGIN: http://localhost:8000
+    ports:
+      - "8080:8080"
+    depends_on:
+      backend:
+        condition: service_healthy

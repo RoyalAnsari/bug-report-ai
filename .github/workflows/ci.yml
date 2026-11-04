@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            backend/requirements.txt
+      - name: Install (CPU torch first)
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
+          pip install -r requirements.txt
+      - name: Backend tests
+        run: python -m pytest backend/tests -q
+      - name: ML tests (need data files that are not in Git, so failures here do not stop the build)
+        continue-on-error: true
+        run: python -m pytest ml/tests -q
+      - name: Check backend packages for known vulnerabilities
+        run: pip-audit -r backend/requirements.txt
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
+      - name: Check production packages for known vulnerabilities
+        run: npm audit --omit=dev --audit-level=high
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -f backend/Dockerfile -t bug-report-backend .
+      - name: Build frontend image
+        run: >
+          docker build -t bug-report-frontend
+          --build-arg VITE_API_URL=http://localhost:8000/api/v1
+          --build-arg API_ORIGIN=http://localhost:8000
+          ./frontend
+      - name: Frontend container serves the site with security headers
+        run: |
+          docker run -d --name frontend -p 8080:8080 bug-report-frontend
+          sleep 5
+          curl -fsSI http://localhost:8080/ | tee headers.txt
+          grep -i "x-content-type-options: nosniff" headers.txt
+          grep -i "content-security-policy" headers.txt
+      - name: Backend image starts and reports a clear error when models are missing
+        run: |
+          set +e
+          docker run --rm -e AUTH_ENABLED=false bug-report-backend > backend.log 2>&1
+          cat backend.log
+          grep -q "model files" backend.log || grep -q "model.joblib" backend.log

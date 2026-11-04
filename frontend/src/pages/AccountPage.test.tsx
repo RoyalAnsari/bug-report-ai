@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { peekFlash } from '../lib/flash'
 import { AuthContext } from '../auth/context'
 import { REVIEWER, makeAuthState } from '../auth/testState'
 import { changePassword } from '../services/auth'
@@ -10,9 +11,9 @@ vi.mock('../services/auth', () => ({
   changePassword: vi.fn(),
 }))
 
-function renderPage() {
+function renderPage(logout: () => void = () => {}) {
   return render(
-    <AuthContext.Provider value={makeAuthState({ user: REVIEWER })}>
+    <AuthContext.Provider value={makeAuthState({ user: REVIEWER, logout })}>
       <AccountPage />
     </AuthContext.Provider>,
   )
@@ -21,6 +22,7 @@ function renderPage() {
 describe('AccountPage', () => {
   beforeEach(() => {
     vi.resetAllMocks()
+    window.sessionStorage.clear()
   })
 
   it('shows who is signed in', () => {
@@ -52,17 +54,19 @@ describe('AccountPage', () => {
     expect(changePassword).not.toHaveBeenCalled()
   })
 
-  it('changes the password and shows a success message', async () => {
+  it('changes the password, signs the user out and leaves a message for the login page', async () => {
     vi.mocked(changePassword).mockResolvedValue(undefined)
+    const logout = vi.fn()
     const user = userEvent.setup()
-    renderPage()
+    renderPage(logout)
     await user.type(screen.getByLabelText('Current password'), 'old password value')
     await user.type(screen.getByLabelText('New password'), 'a brand new password')
     await user.type(screen.getByLabelText('Confirm new password'), 'a brand new password')
     await user.click(screen.getByRole('button', { name: 'Change password' }))
 
     expect(changePassword).toHaveBeenCalledWith('old password value', 'a brand new password')
-    expect(await screen.findByRole('status')).toHaveTextContent('Password changed')
+    await vi.waitFor(() => expect(logout).toHaveBeenCalledTimes(1))
+    expect(peekFlash()).toContain('password was changed')
   })
 
   it('shows the server error when the current password is wrong', async () => {

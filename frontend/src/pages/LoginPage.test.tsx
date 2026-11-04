@@ -1,7 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { peekFlash, setFlash } from '../lib/flash'
 import { AuthContext } from '../auth/context'
 import type { AuthState } from '../auth/context'
 import { ADMIN, makeAuthState } from '../auth/testState'
@@ -21,6 +22,17 @@ function renderLogin(state: AuthState) {
 }
 
 describe('LoginPage', () => {
+  beforeEach(() => {
+    window.sessionStorage.clear()
+  })
+
+  it('shows a waiting message (for example after a password change) and then clears it', () => {
+    setFlash('Your password was changed.')
+    renderLogin(makeAuthState())
+    expect(screen.getByRole('status')).toHaveTextContent('Your password was changed.')
+    expect(peekFlash()).toBeNull()
+  })
+
   it('signs in with the typed email and password, then opens the home page', async () => {
     const login = vi.fn().mockResolvedValue(undefined)
     const user = userEvent.setup()
@@ -45,6 +57,11 @@ describe('LoginPage', () => {
 
     expect(await screen.findByRole('alert')).toBeInTheDocument()
     expect(screen.queryByText('Home page')).not.toBeInTheDocument()
+  })
+
+  it('tells people who forgot their password to ask an admin', () => {
+    renderLogin(makeAuthState())
+    expect(screen.getByText(/Ask an admin to reset it/)).toBeInTheDocument()
   })
 
   it('skips the login page when the user is already signed in', () => {

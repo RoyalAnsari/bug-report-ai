@@ -1,0 +1,26 @@
+# Backend image ke liye (build context: repo ka root). Yahan koi secret ya bari file image mein nahi jani chahiye.
+.git
+.github
+.venv
+**/.env
+**/.env.*
+!**/.env.example
+**/__pycache__
+**/*.pyc
+.pytest_cache
+**/.pytest_cache
+**/node_modules
+frontend
+ml/artifacts
+ml/data
+ml/tests
+backend/tests
+model_bundle
+sample_data
+eda_figures
+_backup
+**/_stray_backend
+backend/frontend
+*.zip
+*.ipynb
+**/.ipynb_checkpoints

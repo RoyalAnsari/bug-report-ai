@@ -11,3 +11,4 @@ _backup/
 _stray_backend/
 -Force/
 .ipynb_checkpoints/
+model_bundle/

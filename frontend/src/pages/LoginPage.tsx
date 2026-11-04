@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
+import { clearFlash, peekFlash } from '../lib/flash'
 import { errorMessage } from '../services/api'
 
 function safeTarget(value: unknown): string {
@@ -16,6 +17,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [notice] = useState<string | null>(() => peekFlash())
+
+  useEffect(() => {
+    clearFlash()
+  }, [])
 
   const target = safeTarget((location.state as { from?: string } | null)?.from)
 
@@ -68,6 +74,12 @@ export default function LoginPage() {
       >
         <h1 className="text-xl font-semibold text-slate-900">Sign in to Bug Report AI</h1>
 
+        {notice && (
+          <p role="status" className="rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800">
+            {notice}
+          </p>
+        )}
+
         {error && (
           <p role="alert" className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
             {error}
@@ -113,6 +125,10 @@ export default function LoginPage() {
         >
           {submitting ? 'Signing in...' : 'Sign in'}
         </button>
+
+        <p className="text-center text-xs text-slate-500">
+          Forgot your password? Ask an admin to reset it on the Users page.
+        </p>
       </form>
     </div>
   )

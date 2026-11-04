@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from pymongo import ReturnDocument
 from pymongo.errors import DuplicateKeyError
@@ -45,6 +45,8 @@ async def create_user(db, email, name, role, password_hash):
         "created_at": now,
         "updated_at": now,
         "last_login_at": None,
+        "failed_logins": 0,
+        "locked_until": None,
     }
     try:
         await db[USERS].insert_one(document)
@@ -67,12 +69,43 @@ async def update_user(db, user_id, fields):
 
 
 async def set_password(db, user_id, password_hash):
+    """Naya password rakhta hai. Purane tokens band ho jate hain aur account unlock ho jata hai."""
+    now = datetime.now(timezone.utc)
     result = await db[USERS].update_one(
         {"_id": user_id},
-        {"$set": {"password_hash": password_hash, "updated_at": datetime.now(timezone.utc)}},
+        {
+            "$set": {
+                "password_hash": password_hash,
+                "password_changed_at": now,
+                "updated_at": now,
+                "failed_logins": 0,
+                "locked_until": None,
+            }
+        },
     )
     return result.matched_count == 1
 
 
 async def touch_login(db, user_id):
-    await db[USERS].update_one({"_id": user_id}, {"$set": {"last_login_at": datetime.now(timezone.utc)}})
+    """Kamyab login: waqt likhta hai aur ghalat koshishon ki ginti saaf karta hai."""
+    await db[USERS].update_one(
+        {"_id": user_id},
+        {"$set": {"last_login_at": datetime.now(timezone.utc), "failed_logins": 0, "locked_until": None}},
+    )
+
+
+async def register_failed_login(db, user_id, max_failed, lock_minutes):
+    """Ghalat password ginta hai. Had poori ho to account lock karke lock ka waqt wapas deta hai."""
+    updated = await db[USERS].find_one_and_update(
+        {"_id": user_id},
+        {"$inc": {"failed_logins": 1}},
+        return_document=ReturnDocument.AFTER,
+    )
+    if updated is None or updated.get("failed_logins", 0) < max_failed:
+        return None
+    locked_until = datetime.now(timezone.utc) + timedelta(minutes=lock_minutes)
+    await db[USERS].update_one(
+        {"_id": user_id},
+        {"$set": {"locked_until": locked_until, "failed_logins": 0}},
+    )
+    return locked_until

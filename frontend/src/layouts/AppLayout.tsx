@@ -16,6 +16,9 @@ const navItems = [
   { to: '/account', label: 'Account', end: false, adminOnly: false, needsLogin: true },
 ]
 
+// Production mein /docs band ho to VITE_SHOW_API_DOCS=false rakhein, taake link na dikhe.
+const showDocsLink = import.meta.env.VITE_SHOW_API_DOCS !== 'false'
+
 function linkClass({ isActive }: { isActive: boolean }) {
   const tone = isActive ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100'
   return `block rounded-md px-3 py-2 text-sm font-medium ${tone}`
@@ -83,14 +86,16 @@ export default function AppLayout() {
                 </button>
               </>
             )}
-            <a
-              href={docsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
-            >
-              API docs
-            </a>
+            {showDocsLink && (
+              <a
+                href={docsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-indigo-700 hover:bg-indigo-50"
+              >
+                API docs
+              </a>
+            )}
           </div>
         </header>
         <main className="mx-auto max-w-6xl p-4 md:p-6">

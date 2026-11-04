@@ -1,0 +1,14 @@
+# Backend ko chalane ke liye sirf zaroori packages (Docker image bhi yehi istemal karegi).
+# Tests, notebook wagaira ke packages root ki requirements.txt mein hain.
+# Doosre packages (numpy, joblib, torch wagaira) in se khud aa jate hain.
+fastapi==0.162.0
+uvicorn==0.54.0
+pymongo==4.19.0
+PyJWT==2.15.1
+argon2-cffi==25.1.0
+python-dotenv==1.2.4
+python-multipart==0.0.32
+pandas==3.1.0
+# Model isi version se bana tha (ml/artifacts/severity_experiments/metrics.json), is liye yeh version mel khana chahiye.
+scikit-learn==1.9.1
+sentence-transformers==6.2.0

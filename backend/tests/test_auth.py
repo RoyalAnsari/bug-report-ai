@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -29,6 +31,9 @@ def make_user(user_id, email, role, password_hash, is_active=True):
         "created_at": None,
         "updated_at": None,
         "last_login_at": None,
+        "failed_logins": 0,
+        "locked_until": None,
+        "password_changed_at": None,
     }
 
 
@@ -48,6 +53,16 @@ def users(monkeypatch):
         return next((doc for doc in store.values() if doc["email"] == wanted), None)
 
     async def touch_login(db, user_id):
+        store[user_id]["failed_logins"] = 0
+        store[user_id]["locked_until"] = None
+
+    async def register_failed_login(db, user_id, max_failed, lock_minutes):
+        doc = store[user_id]
+        doc["failed_logins"] += 1
+        if doc["failed_logins"] >= max_failed:
+            doc["locked_until"] = datetime.now(timezone.utc) + timedelta(minutes=lock_minutes)
+            doc["failed_logins"] = 0
+            return doc["locked_until"]
         return None
 
     async def create_user(db, email, name, role, password_hash):
@@ -71,12 +86,16 @@ def users(monkeypatch):
         if user_id not in store:
             return False
         store[user_id]["password_hash"] = password_hash
+        store[user_id]["password_changed_at"] = datetime.now(timezone.utc)
+        store[user_id]["failed_logins"] = 0
+        store[user_id]["locked_until"] = None
         return True
 
     for name, fake in {
         "get_by_id": get_by_id,
         "get_by_email": get_by_email,
         "touch_login": touch_login,
+        "register_failed_login": register_failed_login,
         "create_user": create_user,
         "list_users": list_users,
         "update_user": update_user,
@@ -272,3 +291,71 @@ def test_change_password_flow(client):
     assert ok.status_code == 204
     assert login(client, "reviewer@example.com", REVIEWER_PASSWORD).status_code == 401
     assert login(client, "reviewer@example.com", "a brand new password").status_code == 200
+
+
+# ---- ghalat password par lock ----
+
+
+def wrong_logins(client, count, email="reviewer@example.com"):
+    for _ in range(count):
+        assert login(client, email, "wrong password!!").status_code == 401
+
+
+def test_account_locks_after_too_many_wrong_passwords(client):
+    wrong_logins(client, 5)
+    locked = login(client, "reviewer@example.com", REVIEWER_PASSWORD)
+    assert locked.status_code == 429
+    assert int(locked.headers["retry-after"]) > 0
+
+
+def test_lock_ends_after_the_lock_time(client, users):
+    wrong_logins(client, 5)
+    users["usr_rev"]["locked_until"] = datetime.now(timezone.utc) - timedelta(seconds=1)
+    assert login(client, "reviewer@example.com", REVIEWER_PASSWORD).status_code == 200
+
+
+def test_successful_login_resets_the_failed_count(client, users):
+    wrong_logins(client, 4)
+    assert login(client, "reviewer@example.com", REVIEWER_PASSWORD).status_code == 200
+    assert users["usr_rev"]["failed_logins"] == 0
+    wrong_logins(client, 4)
+    assert login(client, "reviewer@example.com", REVIEWER_PASSWORD).status_code == 200
+
+
+def test_other_accounts_are_not_affected_by_a_lock(client):
+    wrong_logins(client, 5)
+    assert login(client, "admin@example.com", ADMIN_PASSWORD).status_code == 200
+
+
+def test_admin_password_reset_unlocks_the_account(client):
+    wrong_logins(client, 5)
+    admin = auth_headers(client)
+    reset = client.put("/api/v1/users/usr_rev/password", headers=admin, json={"new_password": "a brand new password"})
+    assert reset.status_code == 204
+    assert login(client, "reviewer@example.com", "a brand new password").status_code == 200
+
+
+# ---- password badalne par purane tokens band ----
+
+
+def test_changing_password_invalidates_the_old_token(client):
+    old_headers = auth_headers(client, "reviewer@example.com", REVIEWER_PASSWORD)
+    changed = client.post(
+        "/api/v1/auth/change-password",
+        headers=old_headers,
+        json={"current_password": REVIEWER_PASSWORD, "new_password": "a brand new password"},
+    )
+    assert changed.status_code == 204
+    assert client.get("/api/v1/auth/me", headers=old_headers).status_code == 401
+
+    new_headers = auth_headers(client, "reviewer@example.com", "a brand new password")
+    assert client.get("/api/v1/auth/me", headers=new_headers).status_code == 200
+
+
+def test_admin_reset_invalidates_the_users_old_token(client):
+    reviewer = auth_headers(client, "reviewer@example.com", REVIEWER_PASSWORD)
+    admin = auth_headers(client)
+    reset = client.put("/api/v1/users/usr_rev/password", headers=admin, json={"new_password": "a brand new password"})
+    assert reset.status_code == 204
+    assert client.get("/api/v1/auth/me", headers=reviewer).status_code == 401
+    assert client.get("/api/v1/auth/me", headers=admin).status_code == 200

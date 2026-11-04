@@ -11,6 +11,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.v1.router import api_router
 from app.core.config import Settings
+from app.core.headers import apply_security_headers
 from app.repositories import app_settings as settings_repo
 from app.services.app_settings import apply_to_state, build_defaults, merge_with_defaults
 
@@ -56,12 +57,21 @@ def create_app(settings=None):
         if client is not None:
             await client.close()
 
-    app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
+    app = FastAPI(
+        title=settings.app_name,
+        version="0.1.0",
+        lifespan=lifespan,
+        docs_url="/docs" if settings.enable_docs else None,
+        redoc_url="/redoc" if settings.enable_docs else None,
+        openapi_url="/openapi.json" if settings.enable_docs else None,
+    )
     app.state.config = settings
     if settings.auth_enabled:
         logger.info("Authentication is ON.")
     else:
         logger.warning("Authentication is OFF (AUTH_ENABLED=false). Use this only for development.")
+    if settings.enable_docs:
+        logger.warning("API docs are ON (ENABLE_DOCS=true). Turn them off in production.")
 
     app.add_middleware(
         CORSMiddleware,
@@ -69,6 +79,12 @@ def create_app(settings=None):
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
     )
+
+    @app.middleware("http")
+    async def add_security_headers(request: Request, call_next):
+        response = await call_next(request)
+        apply_security_headers(response.headers, request.url.path, settings.enable_hsts)
+        return response
 
     @app.exception_handler(StarletteHTTPException)
     async def http_error(request: Request, exc: StarletteHTTPException):
