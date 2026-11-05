@@ -1,0 +1,5 @@
+﻿status,similarity,report_id,text_a,candidate_id,text_b
+confirmed,0.6774,br_038806606f8705a4eb9f,Add SAMPLE_LABEL to nsDOMWindowUtils::SendMouseEventToWindow,726352,Move SAMPLE_LABEL from nsEventListenerManager::HandleEventInternal to nsEventDispatcher::Dispatch
+rejected,0.6626,br_0015bb9abb7611db897f,Opening a Junit result from a URL,293446,[JUnit] Importing from URL does not show progress
+confirmed,0.6266,br_0015bb9abb7611db897f,Opening a Junit result from a URL,165520,Cannot open the junit test by clicking in the JUnit view
+confirmed,0.5678,br_038806606f8705a4eb9f,Add SAMPLE_LABEL to nsDOMWindowUtils::SendMouseEventToWindow,675208,Use NSTrackingArea for mouse event targeting
