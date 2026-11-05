@@ -123,7 +123,7 @@ describe('ReportDetailPage', () => {
     renderDetail()
 
     expect(await screen.findByRole('button', { name: 'Find possible duplicates' })).toBeInTheDocument()
-    expect(mockedGetDuplicates).toHaveBeenCalledWith('br_1')
+     await waitFor(() => expect(mockedGetDuplicates).toHaveBeenCalledWith('br_1'))
   })
 
   it('says when there are no predictions yet', async () => {
