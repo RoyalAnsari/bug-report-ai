@@ -6,6 +6,11 @@ def _split(value):
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
+def _optional_float(name):
+    value = os.getenv(name, "").strip()
+    return float(value) if value else None
+
+
 def _flag(name, default):
     return os.getenv(name, default).strip().lower() in ("1", "true", "yes", "on")
 
@@ -29,6 +34,10 @@ class Settings:
     enable_docs: bool = False
     # HTTPS par deploy karte waqt True karein.
     enable_hsts: bool = False
+    # Severity ke liye kaun sa model: "tfidf" (version 1) ya "transformer" (version 2).
+    severity_model: str = "tfidf"
+    # Transformer ke liye "needs review" ka margin. None ho to calibrate_review_margin.py ki file se aata hai.
+    transformer_review_margin: float | None = None
 
     @classmethod
     def from_env(cls):
@@ -46,6 +55,8 @@ class Settings:
             lockout_minutes=int(os.getenv("LOCKOUT_MINUTES", "15")),
             enable_docs=_flag("ENABLE_DOCS", "false"),
             enable_hsts=_flag("ENABLE_HSTS", "false"),
+            severity_model=os.getenv("SEVERITY_MODEL", "tfidf").strip().lower(),
+            transformer_review_margin=_optional_float("TRANSFORMER_REVIEW_MARGIN"),
         )
 
     def validate_for_startup(self):
@@ -59,3 +70,7 @@ class Settings:
             raise ValueError("ACCESS_TOKEN_MINUTES must be at least 1")
         if self.max_failed_logins < 1 or self.lockout_minutes < 1:
             raise ValueError("MAX_FAILED_LOGINS and LOCKOUT_MINUTES must be at least 1")
+        if self.severity_model not in ("tfidf", "transformer"):
+            raise ValueError("SEVERITY_MODEL must be 'tfidf' or 'transformer'")
+        if self.transformer_review_margin is not None and not 0.0 <= self.transformer_review_margin <= 1.0:
+            raise ValueError("TRANSFORMER_REVIEW_MARGIN must be between 0 and 1")
