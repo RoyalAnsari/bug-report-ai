@@ -7,7 +7,10 @@ SEVERITY_MODEL_VERSION = "tfidf-linearsvc-v1"  # haath se rakha naam, model_vers
 
 
 def build_prediction_document(report_id, result, model_version=SEVERITY_MODEL_VERSION, now=None):
-    """Ek prediction ka document banata hai (database mein dalne se pehle)."""
+    """Ek prediction ka document banata hai (database mein dalne se pehle).
+
+    Agar result mein apna "model_version" ho (jaise transformer), to wahi likha jata hai.
+    """
     return {
         "_id": "pred_" + uuid.uuid4().hex[:20],
         "report_id": report_id,
@@ -15,7 +18,7 @@ def build_prediction_document(report_id, result, model_version=SEVERITY_MODEL_VE
         "margin": result["margin"],
         "needs_review": result["needs_review"],
         "scores": result["scores"],
-        "model_version": model_version,
+        "model_version": result.get("model_version") or model_version,
         "created_at": now or datetime.now(timezone.utc),
     }
 
