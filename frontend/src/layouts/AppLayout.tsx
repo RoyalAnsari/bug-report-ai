@@ -5,10 +5,12 @@ import { docsUrl } from '../services/api'
 
 const navItems = [
   { to: '/', label: 'Dashboard', end: true, adminOnly: false, needsLogin: false },
+  { to: '/try', label: 'Try it', end: false, adminOnly: false, needsLogin: false },
   { to: '/reports', label: 'Reports', end: false, adminOnly: false, needsLogin: false },
   { to: '/predict', label: 'Bulk predict', end: false, adminOnly: true, needsLogin: false },
   { to: '/duplicates', label: 'Duplicates', end: false, adminOnly: false, needsLogin: false },
   { to: '/models', label: 'Model performance', end: false, adminOnly: false, needsLogin: false },
+  { to: '/evaluate', label: 'Evaluate', end: false, adminOnly: true, needsLogin: false },
   { to: '/upload', label: 'Upload', end: false, adminOnly: true, needsLogin: false },
   { to: '/settings', label: 'Settings', end: false, adminOnly: true, needsLogin: false },
   { to: '/users', label: 'Users', end: false, adminOnly: true, needsLogin: true },
