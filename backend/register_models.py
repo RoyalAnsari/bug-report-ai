@@ -16,10 +16,12 @@ from app.repositories.model_versions import (  # noqa: E402
     build_severity_document,
     upsert_version,
 )
+from app.repositories.transformer_versions import build_transformer_document  # noqa: E402
 
 ARTIFACTS = Path(__file__).resolve().parents[1] / "ml" / "artifacts"
 SEVERITY_METRICS = ARTIFACTS / "severity_experiments" / "metrics.json"
 DUPLICATE_CONFIG = ARTIFACTS / "duplicates" / "config.json"
+TRANSFORMER_METRICS = ARTIFACTS / "severity_transformer" / "metrics.json"
 
 
 def read_json(path):
@@ -35,6 +37,8 @@ async def main():
             build_severity_document(read_json(SEVERITY_METRICS)),
             build_duplicate_document(read_json(DUPLICATE_CONFIG)),
         ]
+        if TRANSFORMER_METRICS.exists():
+            documents.append(build_transformer_document(read_json(TRANSFORMER_METRICS)))
     except FileNotFoundError as error:
         print("File nahi mili:", error)
         raise SystemExit(1)

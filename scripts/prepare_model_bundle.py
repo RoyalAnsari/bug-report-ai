@@ -51,12 +51,33 @@ def copy_minilm():
         shutil.copy2(path, destination)
 
 
+def copy_transformer():
+    """Transformer ki zaroori files (model, labels, offsets, metrics, review margin). Logits wagaira nahi."""
+    source = SOURCE / "severity_transformer"
+    if not (source / "model").is_dir():
+        return False
+    shutil.copytree(source / "model", TARGET / "severity_transformer" / "model")
+    for name in ("labels.json", "offsets.json", "metrics.json", "review_margin.json"):
+        if (source / name).is_file():
+            shutil.copy2(source / name, TARGET / "severity_transformer" / name)
+    return True
+
+
 def folder_size_mb(folder):
     return sum(item.stat().st_size for item in folder.rglob("*") if item.is_file()) / (1024 * 1024)
 
 
+TRANSFORMER_REQUIRED = [
+    "severity_transformer/labels.json",
+    "severity_transformer/offsets.json",
+    "severity_transformer/model/config.json",
+    "severity_transformer/model/model.safetensors",
+]
+
+
 def verify():
-    problems = [name for name in REQUIRED if not (TARGET / name).is_file()]
+    required = REQUIRED + (TRANSFORMER_REQUIRED if (TARGET / "severity_transformer").is_dir() else [])
+    problems = [name for name in required if not (TARGET / name).is_file()]
     weights = [TARGET / MINILM / name for name in ("model.safetensors", "pytorch_model.bin")]
     if not any(path.is_file() for path in weights):
         problems.append(f"{MINILM}/model.safetensors (ya pytorch_model.bin)")
@@ -75,6 +96,8 @@ def main():
         copy_plain_folder("severity_experiments")
         copy_plain_folder("duplicates")
         copy_minilm()
+        if copy_transformer():
+            print("Transformer (version 2) bhi shamil kiya gaya.")
     except FileNotFoundError as error:
         print("Kaam nahi hua:", error)
         return 1
