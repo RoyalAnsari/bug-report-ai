@@ -18,10 +18,19 @@ REQUIRED = [
 ]
 WEIGHT_FILES = ["model.safetensors", "pytorch_model.bin"]
 
+# Sirf tab zaroori jab SEVERITY_MODEL=transformer ho.
+TRANSFORMER_REQUIRED = [
+    "severity_transformer/labels.json",
+    "severity_transformer/offsets.json",
+    "severity_transformer/model/config.json",
+    "severity_transformer/model/model.safetensors",
+]
 
-def missing_files(root):
+
+def missing_files(root, transformer=False):
     root = Path(root)
-    missing = [name for name in REQUIRED if not (root / name).is_file()]
+    required = REQUIRED + (TRANSFORMER_REQUIRED if transformer else [])
+    missing = [name for name in required if not (root / name).is_file()]
     model_dir = root / "models" / "all-MiniLM-L6-v2"
     if not any((model_dir / name).is_file() for name in WEIGHT_FILES):
         missing.append("models/all-MiniLM-L6-v2/model.safetensors")
@@ -34,7 +43,8 @@ def main():
         return 0
 
     root = Path(os.getenv("ARTIFACTS_DIR") or DEFAULT_DIR)
-    missing = missing_files(root)
+    transformer = os.getenv("SEVERITY_MODEL", "tfidf").strip().lower() == "transformer"
+    missing = missing_files(root, transformer)
     if not missing:
         print(f"Models maujood hain: {root}")
         return 0
@@ -57,7 +67,7 @@ def main():
         token=os.getenv("HF_TOKEN") or None,
     )
 
-    missing = missing_files(root)
+    missing = missing_files(root, transformer)
     if missing:
         print("Download ke baad bhi yeh files nahi milin:")
         for name in missing:

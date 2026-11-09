@@ -5,9 +5,11 @@ from app.api.v1.endpoints import (
     app_settings,
     auth,
     bulk_predictions,
+    csv_evaluation,
     dashboard,
     duplicate_queue,
     duplicate_suggestions,
+    github_webhook,
     health,
     model_versions,
     predictions,
@@ -15,6 +17,7 @@ from app.api.v1.endpoints import (
     report_predictions,
     reports,
     reviews,
+    triage,
     uploads,
     users,
 )
@@ -27,6 +30,7 @@ admin_only = [Depends(require_admin)]
 # Bina login: health check aur login.
 api_router.include_router(health.router)
 api_router.include_router(auth.router)
+api_router.include_router(github_webhook.router)
 
 # Order pehle jaisa hi hai (route ke takraav se bachne ke liye).
 api_router.include_router(predictions.router, dependencies=signed_in)
@@ -41,5 +45,7 @@ api_router.include_router(reviews.router, dependencies=signed_in)
 api_router.include_router(duplicate_suggestions.router, dependencies=signed_in)
 api_router.include_router(duplicate_queue.router, dependencies=signed_in)
 api_router.include_router(model_versions.router, dependencies=signed_in)
+api_router.include_router(triage.router, dependencies=signed_in)
+api_router.include_router(csv_evaluation.router, dependencies=admin_only)
 api_router.include_router(app_settings.router, dependencies=admin_only)
 api_router.include_router(users.router, dependencies=admin_only)

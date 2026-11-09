@@ -1,0 +1,504 @@
+text,project,severity,bug_id
+UI rendering error with Aero disabled,Core,major,662115
+[gfxInfo] Unknown adapter reported for Intel GMA 965 graphic card under Windows XP,Core,normal,594976
+subtle change with AbstractTreeViewer#getSelection() and #setSelection(..),Platform,normal,125708
+"""ASSERTION: unbalanced suspend count!""",Core,normal,737587
+double clicking on wizard buttons resizes the dialog,Platform,normal,140306
+NPE when switching on 'Show Static Variables' in Variables view,Platform,normal,171800
+emails in specific account show cc line from another email in Local Folders,Thunderbird,normal,527616
+blank threads in debug view,JDT,normal,182008
+"Add nsHTMLAnchorElement, nsHTMLSpanElement and nsHTMLDivElement to the DOM Memory Reporter",Core,normal,679499
+Crash [ @ nsAccessible::InvalidateChildren ],Core,critical,412878
+FUEL should avoid putting itself in the app-startup category,Firefox,normal,506471
+Make use of the cached value for user agent in PluginModuleChild,Core,normal,680528
+"""WARNING: Calling SetWindowTitlebarColor on window that isn't of the ToolbarWindow class.""",Core,minor,402627
+Virtual Tree: multiple setdata calls/multiple widgets resolve to the same index after setItemCount,Platform,normal,130445
+"ASSERTION/Crash: font is lacking metrics, we shouldn't be here: '(mNumLongMetrics > 0) && mHmtxTable != nsnull'",Core,critical,580100
+Wrong location indicated for Plug-in examples in 3.2,Platform,minor,158547
+clang warns about alignment requirement increase in nsID::Equals after bug 164580,Core,normal,659546
+Manifest selection dialog in JAR exporter not sorted,JDT,trivial,127799
+add ia64-hpux block to configure.in,Core,normal,550599
+XMLHttpRequest error status 500 on POST multipart form-data,Core,major,393968
+improvements to debug output List for frames,Core,normal,520427
+Control+Tab to an empty tab panel in a tabbox causes focus to leave the tabbox,Core,normal,370396
+Middle click Reload button messed up tabs after using Panoram.,Firefox,normal,623792
+quota display not readable,Thunderbird,minor,385175
+Maemo shouldn't use the true DPI,Core,normal,530931
+"HUDService.jsm, line 6028: window is null",Firefox,normal,690542
+undo/redo no longer work in variables detail pane,Platform,normal,306380
+Enriched source hover changes size,Platform,normal,217815
+After reinstalling disabled addon it continues to be disabled. Need to reload firefox twice.,Firefox,minor,511097
+nsHTMLImageAccessible should set eImageAccessible in mFlags,Core,normal,747588
+Update Places Query API testing set with new tests,Firefox,normal,432723
+"Using personas: Entering full screen, then exiting, adds toolbar room and grey titlebar",Core,normal,526318
+bookmark dataloss / crash when going backwards from places-bookmarks-schema-5 to places-no-bookmarks-schema-4,Firefox,normal,381129
+clean up browser_tabview_bug587990.js,Firefox,normal,663795
+Firefox 3.6 autoreleasing objects without pool in place - leaking,Core,normal,541809
+[10.7] Conflicting definitions of NS_DEPRECATED,Core,blocker,659825
+Exactly root JSTraceOp,Core,normal,796760
+crash in nsAccUtils::MustPrune,Core,critical,757739
+nsAString.h and nsSubstring.h should use && instead of &,Core,normal,347170
+'buglist_load_named_query' from global/messages.html.tmpl is obsolete,Bugzilla,trivial,388249
+test for window.TabView rather than just TabView,Firefox,normal,587187
+Forecast Fox extension not working with Firefox 2,Firefox,normal,354571
+"[Mac] Choosing ""New Window"" from Firefox's dock menu does not open the new window in the active Space",Firefox,normal,574229
+language mapping dialog combo boxes should be sorted,CDT,normal,271165
+[1.5][compiler] Class literal of array of type parameter should be rejected,JDT,normal,181270
+Small overhead in WizardDialog,Platform,normal,142172
+SteppingController should clear step queue in case of stepping timeout,CDT,normal,318550
+xlink is anchor only?,Firefox,normal,510202
+Artifacts when seeking ogg video,Core,normal,629618
+Open-with downloads are readonly,Core,normal,401316
+"""ASSERTION: invalid image height"" with <svg:foreignObject>, background image, height: 0.5px",Core,normal,383872
+Improve surface creation and drawing code in nsBaseDragService::DrawDragForImage,Core,normal,454407
+parentNode of element gets lost,Core,normal,335998
+Sync. xforms 1.8.0 branch code with current trunk,Core,normal,332853
+TVT3.2:TCT847: English text,Platform,major,145384
+missing keyword 'public' in xpcom/glue/nsAutoLock.h,Core,normal,445951
+MathML <mtext> truncated,Core,normal,364359
+IonMonkey: patching for ICs should invalidate the instruction cache on ARM,Core,normal,721636
+nsDiskCacheDevice: Memory and codesize optimisations,Core,minor,328196
+WARNING: NS_ENSURE_TRUE(mDocument && mDocShell) failed: file nsHtml5TreeOpExecutor.cpp,Core,normal,565186
+WebGL layer compositing through the BasicCanvasLayer is very slow (desktop version),Core,normal,649525
+gfxFontCache will never hit on Freetype2 backend.,Core,normal,489511
+B2G RIL: Add error handling for getICCContacts,Core,normal,787477
+NPE when hovering over @value reference within a type's javadoc,JDT,normal,320084
+[Change Sets] Improvements to active change sets,Platform,normal,134733
+Javadoc comments are still formatted using JavaDocRegion!,JDT,minor,228193
+getContext() calls SetCanvasElement twice,Core,trivial,656183
+Fingerprint scales selection does not work on download.eclipse.org server,Platform,normal,255641
+"Remove ""string.h"" includes from /content/svg",Core,trivial,793308
+Make JSObject::global() return Handle<GlobalObject*>,Core,normal,770737
+Align the Firefox menu with the Firefox button,Firefox,normal,610769
+nsDOMFile.cpp:154:1: warning: ‘nsresult DOMFileResult(nsresult)’ defined but not used [-Wunused-function],Core,normal,669438
+Sensor support for gonk,Core,normal,714413
+NPE updating children in view,Platform,normal,164671
+[Doc] Polishing ModelProvider javadoc,Platform,trivial,286608
+Flatten dist/include,Core,normal,398573
+"A ""waiting"" event isn't fired when playback freezes for lack of data",Core,normal,476811
+PopupDialog's HOVER_SHELLSTYLE should use SWT.TOOL,Platform,normal,220767
+Fix LD for Win64 builds,Core,normal,787806
+Blacklist tracejit and methodjit on samsung i9000 devices,Core,normal,601222
+Protect JobManager.startJob() against exception in Job.shouldRun(),Platform,normal,302988
+[HTML5] extensions/universalchardet/tests/test_bug171813.html fails,Core,normal,545658
+fix cross-architecture pointer size serialization problem with Cocoa NPAPI events,Core,normal,590054
+"when the user disallow pages to set their own colours/background-colors, (un)visited links have the same color as the text color",Core,normal,471520
+CycleCollector depends on uninitialized values (ageSelectionCallback and nsPurpleBuffer::BumpGeneration),Core,normal,376854
+Don't allow overlapping ranges in the selection,Core,normal,348681
+Firefox 8.0a1 Crash [@ xul.dll@0x9cd449 ],Core,normal,678440
+reorganize full selects,Core,normal,358712
+RebuildAllStyleData on iframe can crash-on-unwind after flushing parent and destroying iframe,Core,normal,462392
+Remove jscntxt.h from INSTALLED_HEADERS,Core,normal,677079
+crash due to stack exhaustion in BindToTree with setUserData,Core,critical,639648
+A User with local editcomponents privs should be able to set the grant and request groups to groups the user belongs to only,Bugzilla,normal,616679
+XSS by using XMLHttpRequest and onreadystatechange handler,Core,normal,440308
+"style=""property:currentColor"" doesn't work",Core,normal,414550
+Use reachability for resolving ambiguous indexer bindings,CDT,normal,268704
+SWT.tools not included in artifact.xml,Platform,normal,249637
+[b2g-bluetooth] Implement HFP message handler,Core,normal,792002
+"Cannot pass an empty string as argument (i.e. """") with gdb (version 6.6) debugger.",CDT,normal,223695
+Video and audio stutters on lots of YouTube videos,Core,normal,669556
+Printing cleanup,Core,normal,361844
+"""ASSERTION: MoveNode failed"" with (de-)subscript, insertText",Core,normal,769967
+On Linux in RTL mode Tree.getItem(Point) gives incorrect results,Platform,normal,342648
+nsWindowsDllBlocklist.cpp compilation failure on mingw,Core,normal,584680
+crashes [@ nsCSSFrameConstructor::FindInputData],Core,critical,474938
+Create js::BufferUnderloaded for use in JS engine,Core,normal,710883
+Can not drag tab to make a bookmark,Firefox,normal,465332
+Closed tabs are restored on opening other tabs when Library is working,Firefox,major,628043
+Open File crashes,Platform,blocker,129894
+Add a constructor for gfxQuartzSurface that takes a gfxIntSize,Core,normal,716639
+Firefox crashes when leaving the page before the font is downloaded (using @font-face rules),Core,normal,451462
+<field> evaluation happens at an unsafe time,Core,normal,372769
+Enabling APT is confusing,JDT,normal,136498
+Refactor: GCLI inputter has getCurrentAssignment and assignmentChange,Firefox,normal,723147
+border-collapse column borders not repainted correctly where no cells present,Core,normal,378935
+Expose JS API for settings app permissions,Core,normal,770731
+SWT 3.6 StyledText.addWordMovementListener() contain mistake,Platform,normal,327113
+"ActionMonkey: Remove ""extra"" parameter to JS_FN",Core,normal,397239
+test_seek_out_of_range.html times out in a way that looks random,Core,normal,569214
+Mac OSX 10.8 test slave crashes on WebGL test glsl-function-faceforward.html,Core,normal,786318
+Web Console toolbar styling,Firefox,normal,601667
+Save button of Library search is cut-off,Firefox,normal,477701
+"Multiple editor views: ""Home"" and ""End"" key working wrong after unfinished autocomplete in another editor view",Platform,normal,297834
+Misleading safe-mode UI misleads users during troubleshooting,Firefox,normal,699233
+background-position part of serialized background shorthand is wrong,Core,normal,373881
+Actions not disabled in Variables View for dummy variables when showing references,JDT,normal,184911
+"[Fx3] Context menu is not showed if you right-click on a input, button or select element",Firefox,normal,433168
+Clarify FormToolkit spec WRT calling dispose(),Platform,normal,184987
+"On AIX, unable to add third path to Include Paths in Project Properties",CDT,normal,218565
+FF 3.1b2 crashes when executing some JS code,Core,normal,477848
+Fix a typo in xpcom/tests/TestStrings.cpp:test_strip_chars,Core,trivial,637325
+"UI jobs with ""serial"" scheduling rule creates many threads",Platform,normal,138695
+"The ""User Preferences"" doc page has no information about saved searches",Bugzilla,normal,400629
+JM: Optimize 'typeof' comparisons.,Core,normal,591172
+NPE when copying a series of projects,CDT,normal,193333
+Do not calculate array length in each time,Core,normal,658405
+Expose the keyboard shortcut for focusing the chat bar,Firefox,normal,808422
+Firefox doesn't compile with gtk2 toolkit on SunOS 5.11,Firefox,normal,353132
+Can't close window via close widget after dragging in bookmark menu,Core,normal,407633
+SWT.KeyDown event.keyCode reports wrong key number for Marathi & Bengali,Platform,normal,219582
+bookmarks menu popup stays open after dragging bookmark over it,Firefox,normal,430551
+"Since the landing of 372769, adblock fails to allow new filters to be added",Core,normal,398135
+Safe Browsing use SQL queries to generate random numbers,Firefox,minor,667075
+Test interpreter only in jit-tests,Core,normal,637390
+SpiderMonkey: UseNewType pattern matching broken.,Core,normal,773731
+1.5.0.7 does not allow text to be entered in Java applet.,Core,normal,353160
+IonMonkey: Snapshots are not assigned to LAdd instructions.,Core,normal,677730
+security/manager/ssl/tests/unit/test_bug627234.js is perma-orange on comm-central,Core,normal,804690
+Use the mac profiler backend again,Core,normal,724079
+IonMonkey: MNot::specialization_ is invalid in release builds,Core,normal,731142
+[New Tab Page] Context menu not selectable from lower part of the grid,Firefox,normal,724539
+"Cancel should only shut down autoconfig wizard once, and should learn to spell",Thunderbird,normal,490265
+css @font-face rule does not work with Unicode (UTF-8) Japanese true type font,Core,normal,465034
+"milestone_required should use ""select"" instead of ""determine""",Bugzilla,trivial,330849
+Patch for adding additional file types to copyright tool,Platform,normal,140936
+Remove aCanBePercent parameter from nsAttrValue::ParseSpecialIntValue,Core,trivial,623589
+Internal compiler error: NullPointerException at org.eclipse.jdt.internal.compiler.ast.CastExpression.checkUnsafeCast(),JDT,normal,230070
+Replace the Disassembly View with the DSF Disassembly View,CDT,normal,305533
+"""ABORT: Rendering should be disabled"" with markerHeight=""0""",Core,critical,692203
+[parser] if () else if () is parsed incorrectly,CDT,normal,299495
+CORS: Cross-domain PROPFIND XHR request for servers with Basic authentication does not work.,Core,major,597301
+SVG stroke on text is rendered on... something else,Core,normal,400025
+[SeaMonkey] reftest: 2 input-text-* fail since landing,Core,major,517100
+"Error message ""dirname: extra operand `Files/Microsoft'"" when running configure",Core,minor,485264
+refinement for bug 595943,Firefox,normal,596833
+final URLs for report phishing location,Firefox,normal,346242
+Add a ReplaceElementAt to nsTArray,Core,normal,685905
+Sync pane for In-Content preferences,Firefox,normal,735091
+Taskbar Previews Win7 not working,Core,major,520801
+Skew transforms were broken by the cairo update in December,Core,normal,373632
+"""Set as wallpaper"" arbitrary execution using <object> (aviary/moz1.7 branch)",Core,normal,333394
+Support changing the Accept header via a preference,Core,normal,496292
+[templates] Error in SWT-Text template,JDT,trivial,241808
+Expose DOMWindow,Core,normal,470019
+"when chrome does a structured clone of an untrusted object, unprivileged getters/setters could escalate privileges",Core,normal,739825
+XForms/schemavalidation crashes when loading XML file with schema,Core,normal,478105
+place:folder=x shows next to Location line in Library,Firefox,normal,411549
+unroll Duff proper,Core,normal,558270
+[FIX]Assert early on bogus display types for table rows,Core,normal,449422
+Sunspider trace-test 'check-date-format-tofte.js' is failing (false negative),Core,normal,600522
+Ability to move breakpoints manually to a different line,CDT,normal,221408
+[@ JS_GetFunctionScript ] Crash due to setTimeout in greasemonkey script,Core,normal,441714
+SWTSpy code has no license specified,Platform,minor,129456
+Add missing 64-bit algebraic optimizations to ExprFilter,Core,normal,560106
+Keys pref page: switching scheme not applied,Platform,major,188076
+prbool violation in /content/html/content/src/nsHTMLButtonElement.cpp,Core,normal,483217
+Hiding line numbers -> cvs annotations disapear,JDT,normal,133514
+"at build with JS_VERSION=JS_VERSION_ECMA_3, crashed in JS_CompileScript",Core,normal,412894
+removeAll on a Tree crashes GTK if TreeItem has a DisposeListener,Platform,normal,124563
+Add Assamese to shipped-locales on aurora and beta,Firefox,normal,716688
+DocShell history gives NS_ERROR_OUT_OF_MEMORY,Core,normal,630593
+Make ImportExportWizardButtons public,CDT,normal,315237
+EACCES ignored: empty attachment,Thunderbird,normal,353308
+delayed accessible events problem,Core,normal,377728
+"Make all child elements of a flexbox have their ""display"" values compute to blockified forms",Core,normal,783415
+jsreftests - js1_8_1/trace/regress-451974-02.js random jit timing error,Core,normal,524734
+"Built failed when $target_arch is ""arm"" but not armv7",Core,normal,819246
+Empty text-field area goes outside of minimized group when hovering with mouse,Firefox,normal,671243
+Manage nested key events for IME,Core,normal,685073
+[DataBinding] Realm documentation is wrong (3.4),Platform,normal,200127
+"[Markers] ""Open Another"" does not work",Platform,major,212550
+ASSERTION: QueryInterface needed: 'query_result.get() == mRawPtr' in imgRequest::Init,Core,normal,724584
+AST: Strange new type IResolvedAnnotation,JDT,normal,123470
+changes to configure.in to enable jemalloc on windows ce,Core,normal,481582
+Intermittent Android REFTEST TEST-UNEXPECTED-FAIL | layout/reftests/svg/smil/container/deferred-anim-1.xhtml | image comparison (==),Core,normal,707733
+mmap io for JARs,Core,normal,504864
+[FIX]Somewhat reduce the memory taken up by principals,Core,normal,397733
+Generalize Declared Type fails with array-valued annotation member variable,JDT,normal,311099
+ASSERTION: Bogus: '!mHead' (nsLineBox.cpp#916 - nsFloatCacheFreeList::Append),Core,normal,334105
+Same-origin check in nsXMLHttpRequest::OnChannelRedirect() can be circumvented,Core,normal,439035
+Add NEON detection to SSE.h?,Core,normal,583958
+SourceViewerInformationControl does not respect size hint,JDT,normal,135841
+JM: Crash on Firebug test for issue 2914,Core,normal,601197
+Crash when spell checking selection changes,Core,critical,456944
+Turn the layer prefs into a tri-state,Core,normal,623446
+locale.dir=rtl does not affect all UI elements in branch builds,Firefox,normal,348607
+Disable theming in SVG images,Core,normal,686581
+Incorrect decompilation for labeled useless statements,Core,normal,349489
+"GetterSetters dialog: missing mnemonic on ""Allow setter for...""",JDT,minor,173017
+[number format detail] Number formats should not be sorted alphabetically.,CDT,normal,299300
+implement activity flyout panel,Firefox,normal,779923
+Javadoc warnings in N20070129-0010,Platform,normal,172001
+[AccessFu] Introduce better feedback when switching tabs and focusing on content area.,Core,normal,802415
+Debugger breaking when it shouldn't,Firefox,normal,785689
+ASSERTION: invalid BC damage area: 'PR_FALSE',Core,normal,460637
+TEST-UNEXPECTED-FAIL | chrome://mochikit/content/chrome/widget/tests/test_native_menus.xul | undefined,Core,normal,516480
+[HTML5] Revise the translator README to cover all makefile functionality,Core,minor,539210
+Delete Launch Configurations dialog problems,Platform,normal,137923
+the outline of the border for -moz-border-radius is not shown in particular circumstances,Core,minor,399258
+Fix unused variable warning in ExternalHelperAppParent.cpp,Core,normal,665595
+Two minefield instances per click of launcher after first. Unresponsive instances left after a session.,Firefox,normal,615007
+Missing help for navigation tools,CDT,normal,204243
+select all using ctrl+a fails in message search window,Thunderbird,normal,336334
+Right clicking on the empty spaces to the right of paragraphs selects the whole paragraph,Core,normal,417418
+runtime exception in objectContribution selectionChanged sabatoges popup menu,Platform,major,175417
+Crash [@ AsyncClickHandler::Run() ],Core,critical,592835
+persist each group's active tab across sessions,Firefox,normal,593283
+Cannot build because of midl mismatch,Core,blocker,329209
+[CommonNavigator] Incorrect pipeline logic for interceptXxx methods,Platform,normal,285529
+Add various console warnings,Core,normal,688190
+"When switching back to an inspected tab, the outline is not visible anymore",Firefox,normal,787952
+Remove jsop_* from JSContext,Core,minor,364809
+our first screenshot of a webrtc call,Core,normal,737583
+Allow to precompile startup cache without omnijar'ing first,Core,normal,792050
+"""print preview"" continues to cause trouble, allowing chrome privilege",Core,normal,328469
+"make <input type=""tel""> accessible",Core,normal,559746
+Cannot start dragging titlebar when Firefox button opens its menu,Core,normal,627272
+lock reentrancy through nsCacheEntryDescriptor::Close,Core,normal,332730
+"""ASSERTION: EnsureEditorData() called when detached.""",Core,normal,430628
+nsDocAccessible is not destroyed when closing a tab,Core,critical,405414
+Qt build of Firefox or Fennec does not respect my screen's DPI,Core,normal,524919
+Consider truncating URLs logged in ++DOMWINDOW and --DOMWINDOW,Core,normal,797649
+TVT33:TCT265: cs : Functional:Unclear button label,CDT,trivial,190258
+Remove chrome protocol registration from the registry,Firefox,normal,355661
+ASTWriter fails on IASTDeclarators with nested declarators,CDT,normal,321069
+Prevent overwriting HttpOnly cookies from web content,Core,normal,383181
+Incomplete code coverage or useless statement within ThrowStatement#resolve,JDT,normal,202393
+TI: Crash [@js::types::TypeSet::destroy] // GC related Memory corruption,Core,critical,647183
+Cross Origin Object.toString and javascript URI vulnerability,Core,critical,576616
+Building dehdyra against SpiderMonkey trunk fails,Core,normal,520623
+[CommonNavigator] NPE in PluginDropAdapter.drop,Platform,normal,124939
+Hashtable recursion assertion with nsDocAccessible on the stack,Core,normal,631772
+"[ActivityMgmt] WorkbenchActivityHelper restrictArray is returning NULL for objects failing the test ""restrictUseOf(Object)""",Platform,normal,288388
+Disable 'check for expiration of doubleClickTime' in TreeViewer and TableViewer,Platform,normal,216706
+Canvas transformations after beginPath() is not applied to 2nd call of stroke()s or fill()s.,Core,normal,690643
+trace tree visualizer,Core,normal,506714
+[Debug Doc] update debug related task topics,JDT,normal,143604
+[Mac] Async Plugin should default to true,Core,normal,663259
+"summarized timetracking data line layout is quite ""heavy""",Bugzilla,trivial,472274
+AllowOverride Options missing when running under mod_perl,Bugzilla,normal,787688
+Turn on touch event tests,Core,normal,775162
+Typo in eBay search plugin description,Firefox,trivial,461247
+The new windows button appears in the Print Preview window,Firefox,normal,575291
+Remove nsITextControlFrame::GetTextLength,Core,normal,809585
+IonMonkey: generateVMWrapper clobbers non-volatile registers,Core,normal,717254
+Replace Minefield with Firefox in UA string,Firefox,normal,588874
+[Regression] Moving page with right arrow key shows contents of page again,Core,normal,581104
+Editable trees: double click for cell selection also expands/collapse container treeitem,Core,minor,402655
+Address FindBugs issues in debug.core and debug.ui,CDT,normal,341175
+Keyboard shortcuts different on Linux and Windows,Thunderbird,normal,422757
+[multi-process][breakpoints] Setting breakpoints on a running target does not work with multi-process,CDT,normal,337893
+"Search in ""Current Collection Only"" doesn't return results",Firefox,normal,389024
+re-enable clipboard on WinCE,Core,normal,479733
+Replace manual refcounting of nsTimeouts in nsGlobalWindow.cpp with equialent nsRefPtr,Core,minor,517070
+IPC is still broken on DragonFly,Core,normal,787588
+typeof Prototype == object since 2007/05/10,Core,normal,400366
+ArrayStoreException when formatting set of regions,JDT,normal,210922
+Javascript string crash found while fuzzing,Core,normal,665936
+Detached View doesn't remember content for invisible perspectives,Platform,normal,186355
+Chat icons not shown on Aero in small icon mode,Thunderbird,normal,747165
+Paste copied image from Aurora to Paint.NET v3.5.10 fails,Core,normal,787769
+Blob should have a constructor.,Core,normal,721569
+"""ASSERTION: Invalid value for js-main-runtime-gc-heap-committed-unused-ratio""",Core,normal,751509
+"Intermittent browser_819510_perwindowpb.js | sessionstore state: 2 windows in data being writted to disk - Got 3, expected 2 | sessionstore state: 1 closed window in data being writted to disk - Got 0, expected 1",Firefox,normal,822093
+String.splice() memory use,Core,major,481922
+TB 9 does not start on XP Pro SP3,Thunderbird,normal,712960
+Unmark Document's and Window's ELM,Core,normal,743199
+Implement new new load algorithm,Core,normal,479859
+Progress bars on Windows Classic need a padding,Core,normal,666203
+Moving starred items between accounts deletes the starred flag/status,Thunderbird,major,371789
+Remove dead code: txXPathNodeUtils::getDocument,Core,normal,705430
+"TreeColumnheaders and actual tree columns sometimes get out of synch, 1 more columnheader than actual columns.",Core,major,428240
+jsonrpc.cgi should use Bugzilla::Error and does not,Bugzilla,normal,502698
+Table.computeSize returns wrong v,Platform,normal,151891
+Remove nsIDOMGeoPositionError::message,Core,critical,526317
+Move Webapps.js and Webapps.jsm out of dom/base,Core,normal,760277
+SWT App dies on startup if display is created in a static initializer,Platform,normal,212636
+Feature copyrights out-of-date or missing,Platform,normal,269356
+fatvals: JS errors starting up browser.,Core,normal,575345
+"Redirects for What's New, Release Notes, Start Page",Thunderbird,normal,518019
+Make Subscriptions query have a favicon in places,Firefox,normal,335270
+Mnemonic collision on debug preference page,Platform,trivial,276908
+Changes in extensions directory break globals initialization,Firefox,major,605762
+_isCmdLineEmpty should not clobber window.arguments[0],Firefox,minor,610017
+Style editor shows wrong number of rules in files,Firefox,normal,719018
+[OOPP] Flash deadlocks during script evals that trigger focus related events,Core,normal,550784
+Removing an inline css transform on a table applies twice the resulting computed transform,Core,normal,816458
+Style new bookmark contextual dialog on XP,Firefox,normal,403157
+[AWT] SWT_AWT bridge doesn't run on AIX,Platform,normal,167124
+Top crash bug in nsAccessible::TextLength(),Core,critical,353200
+LookupPolicy does the wrong thing on jar: URIs,Core,normal,437723
+Layout won't build with --disable-inspector-apis,Core,normal,339244
+Style Inspector MDN help links fail to lead to MDN articles for some properties,Firefox,normal,691306
+IonMonkey: Trace embedded GC pointers in JIT code,Core,normal,683407
+Name resolution problem with const array,CDT,normal,263159
+"Assertion failure: blockDepth < ss->top, at jsopcode.cpp:4127",Core,critical,765280
+Update wikipedia search engine,Firefox,normal,425431
+FTP listing style on hover is bugged,Core,normal,421632
+Renaming the project doesn't update the macros and makes sources to appear as excluded from build,CDT,normal,286384
+frequent database deadlocks when deleting recent searches,Bugzilla,normal,749540
+caret line highlight leaves screen artifacts,Platform,normal,270544
+Canvas gets confused about it's path/transform state,Core,normal,813851
+CompilationUnit.rewrite messes up .class-literal in annotation instead of changing class to interface,JDT,normal,308754
+broken Node.contains,Core,normal,685139
+Variables view column reorder,Platform,normal,223233
+"Consistently name User Preferences, err Default Preferences, err Edit Settings",Bugzilla,normal,363908
+NPE caugth in DefaultBindingResolver.resolveName(Name),JDT,normal,131921
+Crash [@ nsLineBox::CachedIsEmpty] with scale3d transform,Core,critical,696175
+Content assist for abstract class instantiation adds semicolon at wrong place,JDT,normal,326377
+"""ASSERTION: transaction did not execute properly"" involving designMode, execCommand('bold'), XUL",Core,normal,336096
+Caret-moved events missing from Location bar,Core,normal,494802
+Workbench throws NPE's on initial startup after install when bundles are started programmatically in earlyStartup(),Platform,trivial,331621
+Screenshots that require updating,JDT,normal,144508
+Content Assist fails with overloaded operators (depending on used syntax),CDT,normal,231277
+Emoticons are clipped after checkin for Bug 458487,Core,normal,463204
+"""Assertion failure: OBJ_SCOPE(obj)->object == pobj, at ../jsobj.cpp"" or ""Assertion failure: OBJ_IS_CLONED_BLOCK(obj), at ../jsobj.cpp""",Core,critical,491013
+Change nsIContent::IsContentOfType to nsINode::IsNodeOfType,Core,normal,335911
+Homepage URL in preferences is right aligned instead of left aligned,Firefox,normal,477696
+Add WebAPI tests to resume held call (WebTelephony),Core,normal,781548
+Symbolic link support doesn't work on the AIX,Platform,normal,293185
+Telemetry opt-in UI should only be on for release builds,Firefox,normal,667577
+nsObjectLoadingContent should null-initialize mPendingInstantiateEvent (uninitialized memory read/jump),Core,normal,386889
+Branch only crash [@ SetFrameIsSpecial],Core,critical,350267
+IonMonkey: Extend callWithABI to work with float arguments,Core,normal,709423
+ImportExecutableWizard allows to finish with an empty configuration name,CDT,major,159173
+js1_5/Regress/regress-334807-0[24].js fail in browser,Core,normal,335267
+Bump minimum Android SDK API level we require to 14,Core,normal,759115
+[devtb] Implement the style for the buttons in the developer toolbar,Firefox,normal,764555
+"""GO"" button after search field hardly visible on the Mac in Firefox",Platform,normal,287820
+Android blacklisting turns off JIT on all devices,Core,blocker,602393
+Inlines can incorrectly apply end-margin/border/padding when next-in-flows have a fixed continuation,Core,normal,492469
+"Context menu while right-clicking a link should open the link, not link-like text that happens to be selected",Firefox,normal,526952
+Context menu in Compose Window has non-functional and unrelated options,Thunderbird,normal,720420
+Crash [@ nsFrameList::InsertFrame] on print preview with positioned elements and page-break-before,Core,critical,398322
+[jsr269] Package annotations not visible to Java 6 APT processors,JDT,normal,258906
+Suspicious DOM mutation events in scrollable frame,Core,normal,382681
+Error/Exception/NS_ERROR_FAILURE / nsIMsgAccountManager.defaultAccount / msgMail3PaneWindow.js :: MigrateJunkMailSettings :: line 1731,Thunderbird,normal,368506
+ElementImpl.hashCode throws an NPE,JDT,normal,295948
+Update the marker help graphic,Platform,normal,234362
+TI: Different output with testcase with and without -n,Core,normal,660437
+Setting Compiler Compliance Level to 1.4 Problem with JDK 6,JDT,major,191804
+Gradient on SVG Text using incorrect bounding box,Core,normal,359449
+Failure to free a JSScript in obj_eval,Core,normal,325479
+"TM: Assertion failure: str->length() < JSString::MAX_LENGTH, at jsscopeinlines.h:158",Core,critical,650621
+[FastView] 3.3 presentation: duplicate views when restoring single view from new FVBs,Platform,normal,163828
+"Delete update.sh and the patches from media/libsydneyaudio, and fix the readmes",Core,normal,683822
+"""depth of field"" chrome experiment doesn't trace",Core,normal,523452
+[FIX]DOMNodeInserted/DOMNodeRemoved listener checks use wrong node,Core,normal,367164
+NPE in TraceControlView,CDT,normal,309215
+Plug-in version numbers need to be updated in the maintenance stream,Platform,normal,202531
+Store the nodeName on the nodeinfo for DOM elements,Core,normal,614171
+"IPDL shouldn't generate empty switch statements, causes MSVC to issue a warning",Core,minor,509581
+Delete references to the tab when unlinking a TabItem,Firefox,normal,664549
+[Developer Toolbar] Web Console error count is too close to the label,Firefox,normal,777569
+Extension functions fail because libgkplugin.so does not get installed,Thunderbird,normal,454025
+"Ant Builder has no ""Run the builder"" settings",Platform,normal,155566
+ASSERTION: XPConnect is being called on a scope without a 'Components' property!,Core,normal,417673
+NPE org.eclipse.jdt.apt.core.internal.env.BaseProcessorEnv:491,JDT,normal,245746
+SVG animation with indefinite repeatDur doesn't repeat,Core,normal,703992
+Remove the last vestiges of MOZ_MILESTONE_RELEASE,Core,normal,501586
+Image::GetCurrentFrameRect shouldn't be Com-y,Core,normal,587779
+Add weaving bundles to equinox build.,Platform,normal,286241
+OS/2 repaint issues with Thebes,Core,normal,371505
+Crash [@ HIToolbox] on myspace photo uploader,Core,critical,409615
+cells from a column not vertically aligned in a table,Firefox,normal,523096
+"Memory corruption with <tr style=""display: inherit"">",Core,critical,372376
+Suppress all WN pages for updates to FF16 (and only 16),Firefox,normal,792181
+"[account autoconfig]When I create a new account tb stay in ""checking password..."" indefinitely",Thunderbird,major,527324
+Contextual launch not choosing most recent configuration,JDT,normal,223851
+[quick fix] NPE when fixing projet setup,JDT,normal,229031
+Nameresolution problem in case of typedef-ed void,CDT,normal,258694
+android build broken in jscntxt.cpp,Core,normal,571751
+Intermittent crash [@ mozilla::dom::workers::xhr::XMLHttpRequestPrivate::DispatchPrematureAbortEvent] pretending to be test_bug348497.html | Exited with code -1073741819 during test run,Core,normal,718260
+Console view: Copy is disabled after double-click to select word,Platform,normal,261206
+YouSendIt password prompt focuses compose windows by default,Thunderbird,normal,756239
+"""ASSERTION: aDocument must be current doc of aParent"" with XBL, <xul:listboxbody>",Core,normal,415301
+Debugger.prototype.wrap wraps the wrapper,Core,normal,741615
+"Auto Indentation (CTRL+i) is not correct for C-functions braces, when declaring function with braces on new line.",CDT,normal,334805
+NPE in DisassemblyPart,CDT,normal,315835
+Crash when loading gaia homescreen app out of process,Core,normal,761933
+BlockSelection: Exception and crash while RTL orientation,Platform,normal,277442
+Implementing __iterator__ as generator doesn't work,Core,normal,346021
+Add touch-enabled support for Hildon,Core,normal,520521
+Live JSScripts can be destroyed by script-object finalizer,Core,normal,438052
+Menu class has a public '_setVisible(boolean)' method.,Platform,normal,150099
+Trunk crash [@ PL_strcmp - nsAccUtils::GetRoleMapEntry - nsAccessibilityService::GetAccessible ],Core,major,501071
+New folder button on Add Bookmark panel does nothing,Firefox,normal,388860
+[content assist] After 'implements' interface members are not proposed,JDT,normal,267091
+"IonMonkey: Assertion failure: !entered && i < mLength, at ./dist/include/js/Vector.h:373",Core,major,724999
+"Watching-related text at bottom of ""Email Preferences"" page has typos",Bugzilla,minor,364919
+Rename nsIDOMTouchPoint to nsIDOMTouch,Core,normal,652814
+"[Midas] Visited links are black, not purple",Core,minor,374635
+DBCS4.1 Not pop up Javadoc when the mouse is on a class with CJK Extension B,JDT,normal,342249
+Crash at [@js_Interpret] on YOMIURI ONLINE,Core,normal,488802
+Having the start page set to certain pages stops css loading on the what's new page,Thunderbird,normal,466527
+Add support for the Open Web Apps API,Firefox,normal,697006
+Device Storage - device storage file types compares must be case insensitive.,Core,normal,792983
+deprecate unused JavaCore.COMPILER_PB_BOOLEAN_METHOD_THROWING_EXCEPTION,JDT,trivial,245963
+Optimize _XPCNativeWrapperCtor to lessen / remove impact on startup,Core,normal,535079
+Remove nsITCPSocket constants,Core,normal,784897
+Copying video frame to canvas with B2G Omx backend enabled fails,Core,normal,794061
+[Skia] Unitialized variable 'margin' in SkDraw.cpp,Core,normal,715718
+Odd alt+shift+T (surround w/ Try-Catch) behavior,JDT,normal,139639
+font pref menus do not display correctly in Japanese,Core,normal,519149
+Quick fix is not available in Markers view,Platform,major,251195
+[DataBinding] Tests for ShellObservableValue,Platform,normal,212235
+"Remove aliased properties (JS_AliasProperty, JS_AliasElement, etc.)",Core,normal,576034
+Panorama mixes up tabs between different groups,Firefox,normal,657985
+nsScriptLoader should use nsRefPtr to hold nsScriptLoadRequest,Core,trivial,597368
+Javascript closures : closed-over values become unexpectedly undefined.,Core,normal,583757
+"A function decompiles as ""[object Function]"" after export/import",Core,minor,432075
+layout/reftests/text/zwnj-02.html fails on some machines,Core,normal,465140
+Implement Proxy.for,Core,normal,703537
+[QAC generated] Wrong Test Pilot diaglog display,Firefox,normal,579239
+Wrappers don't deal with non-native objects.,Core,normal,399094
+EventUtils.synthesizeKey() shouldn't dispatch keypress event for modifier keys if the type isn't specified,Core,normal,711903
+remove threadpane.dtd from thunderbird,Thunderbird,normal,348520
+Add eclipsec.exe to windows downloads,Platform,normal,184331
+font/glyph selection test,Core,normal,366870
+"Occasional ""unblessed reference"" software error in process_bug.cgi",Bugzilla,normal,600598
+rewrite Mac icon decoder,Core,normal,335723
+Add beforeTraverse and purpleCleanUp phases to CC,Core,normal,716518
+RadioState should work like RegistryToggleState,Platform,normal,267408
+"""while (1) break"" causes too much recursion in Narcissus",Core,normal,399659
+Unused nsCOMPtr<nsIInputStream> input in nsInputStreamWrapper::LazyInit(),Core,trivial,584585
+OTS r77 assumes little-endian,Core,normal,747816
+Watch expression keeps reference to old IDebugTarget object after debug session terminates,Platform,normal,164953
+NPE from JobInfo,Platform,normal,123169
+icon for text match confusing,Platform,normal,201563
+[JFace] ToolTip should respect Display.boundaries,Platform,minor,164615
+Edit message as new compose window background turns darker blue,Thunderbird,normal,464993
+"Intermittent mochitest-plain-5 leak of about 35KB or 67KB (7 AtomImpl, 1 BackstagePass, 1 Connection, 1 MemoryReporter_StorageSQLite, 8 Mutex)",Core,normal,754588
+Customize toolbar sheet is placed mostly outside of the browser,Firefox,normal,477754
+"extra focus (hidden) event fired when tabbing away from combobox, resulting in unidentified state for screen readers.",Core,major,403210
+[browser]Avoid invoking _getUrl inside MapUrlToZone callback,Platform,normal,334067
+Allow <marquee> inside <p>,Core,normal,369326
+Problems view: strange dialog if no quick fix is found,Platform,normal,282653
+[C++0x] Add support for c++0x features implemented in gcc 4.5,CDT,normal,316306
+Blurred fonts on some websites,Core,normal,614555
+moz:distributionID should not be hardcoded into nsSearchService.js,Firefox,normal,352592
+ctypes gives out relocatable pointers to ArrayBuffer data,Core,normal,785167
+Update OS/2's README.txt with information on RWS,Core,normal,411573
+Warning: nsIWindowCreator2 is scriptable but inherits from the non-scriptable interface nsIWindowCreator,Core,normal,338871
+Add org.eclipse.compare.core bundle to Platform feature,Platform,normal,240859
+"Textbox border of Location bar and search box is invisible with ""High Contrast - Windows Classic""",Firefox,normal,560755
+Overloaded arithmetic operators are not handled properly,CDT,normal,259927
+[Project Sets] Canceling during overwrite of project prompt doesn't cancel,Platform,normal,181603
+[assist] void typed proposal may not be appropriate in many contexts,JDT,normal,271296
+Default Application on Vista not working,Firefox,normal,352424
+"TM: Crash [@ js::Mark] or ""Assertion failure: !(addr & GC_CELL_MASK),"" or ""Assertion failure: thing,""",Core,critical,592234
+"CPU maxed out by fill=""freeze"" after the active duration has ended",Core,normal,527762
+Graphic crossfade doesn't work anymore,Core,normal,723484
+assertion failure in win debug in WebGL test drawingbuffer-static-canvas-test.html,Core,normal,681400
+Remove nsContentUtils::GetPrefBranch(),Core,normal,659913
+JS engine stops execution trying to uneval an object with a regexp getter,Core,major,352455
+Crash [@ nsDocument::GetFirstChild] when following selection instructions in this particular testcase,Core,critical,349931
+Header login form doesn't persist logins if rememberlogin is defaulton,Bugzilla,normal,478173
+Exception thrown while refactoring Extract Superclass,JDT,normal,140580
+Make setting NULL to an outparam on failure ok,Core,normal,451079
+"""ASSERTION: Ancestors of nodes with frames to be constructed lazily should not have NEEDS_FRAME bit set"" and more with framesets",Core,normal,564368
+Clear Private Browsing dialog can be minimized,Firefox,minor,475564
+GC.drawText not as spec'd,Platform,major,124425
+Update eTLD (public host) list,Core,normal,447815
+[toolbox] Tilt toggle command is broken,Firefox,normal,814592
+Pushstate doesn't load from bfcache when skipping past the most recent history entry for a document,Core,normal,646641
+PrefixSet loading should use readahead,Firefox,normal,686691
+--enable-application should default to browser,Core,normal,644861
+The new Lens feature in Google Reader doesn't work under Windows,Firefox,normal,433321
+crash in nsDocAccessible::AttributeChangedImpl,Core,critical,754377
+"Clean up IsInlineFrame(2), nsStyleDisplay::IsBlockLevel, and friends",Core,normal,383551
+Do not disable code assist processors automatically,JDT,normal,132643
+,Core,major,990001
+This row has an invalid severity,Core,urgent,990002
+This row has no project and a strange severity,,???,990003

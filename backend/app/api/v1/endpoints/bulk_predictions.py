@@ -20,6 +20,7 @@ async def bulk_predict(body: BulkRequest, request: Request, db=Depends(get_db)):
     predictor = getattr(request.app.state, "severity", None)
     if predictor is None:
         raise HTTPException(status_code=503, detail="Severity model is not loaded")
+    version = getattr(predictor, "version", SEVERITY_MODEL_VERSION)
 
     reports = await bulk_repo.find_unpredicted(db, body.limit)
     if not reports:
@@ -29,7 +30,7 @@ async def bulk_predict(body: BulkRequest, request: Request, db=Depends(get_db)):
             predicted=0,
             needs_review=0,
             remaining=counts["unpredicted"],
-            model_version=SEVERITY_MODEL_VERSION,
+            model_version=version,
         )
 
     pairs = await run_in_threadpool(predict_in_batches, predictor, reports, BATCH_SIZE)
@@ -42,5 +43,5 @@ async def bulk_predict(body: BulkRequest, request: Request, db=Depends(get_db)):
         predicted=len(documents),
         needs_review=sum(1 for document in documents if document["needs_review"]),
         remaining=counts["unpredicted"],
-        model_version=SEVERITY_MODEL_VERSION,
+        model_version=version,
     )

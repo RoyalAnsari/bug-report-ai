@@ -26,7 +26,7 @@ Do this once, on your own computer, from the project folder (virtual environment
    python scripts/prepare_model_bundle.py
    ```
 
-   It creates a `model_bundle` folder (about 250 MB) and prints the sizes. It leaves out the ONNX and OpenVINO copies and the other framework copies of the MiniLM model. `model_bundle` is not committed to Git.
+   It creates a `model_bundle` folder (about 250 MB) and prints the sizes. It leaves out the ONNX and OpenVINO copies and the other framework copies of the MiniLM model. `model_bundle` is not committed to Git. If `ml/artifacts/severity_transformer` exists (version 2), the bundle also contains that model (about 250 MB more).
 3. Upload it to a **private** repo (use your own username):
 
    ```
@@ -76,6 +76,7 @@ The steps are the same on any host that can build a Dockerfile from GitHub:
    | `ENABLE_DOCS` | `false` |
    | `ENABLE_HSTS` | `true` |
    | `LOAD_MODELS` | `true` |
+   | `SEVERITY_MODEL` | `tfidf` (version 1) or `transformer` (version 2). The transformer needs about 600 MB more memory, so choose an instance with more RAM |
    | `MODELS_REPO` | `YOUR-USERNAME/bug-report-ai-models` |
    | `HF_TOKEN` | the **read** token |
 

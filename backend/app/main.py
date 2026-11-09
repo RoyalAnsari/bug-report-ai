@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from dataclasses import replace
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -42,10 +43,22 @@ def create_app(settings=None):
             from app.ml.inference import DuplicateFinder, SeverityPredictor
 
             logger.info("Loading models (this can take about 30 seconds)...")
-            app.state.severity = SeverityPredictor.from_artifact(review_margin=settings.review_margin)
+            effective = settings
+            if settings.severity_model == "transformer":
+                from app.ml.transformer_inference import TransformerSeverityPredictor
+
+                app.state.severity = TransformerSeverityPredictor.from_artifact(
+                    review_margin=settings.transformer_review_margin
+                )
+                # Settings page ka default margin transformer ke apne margin se shuru hota hai.
+                effective = replace(settings, review_margin=app.state.severity.review_margin)
+                logger.info("Severity model: transformer (%s)", app.state.severity.version)
+            else:
+                app.state.severity = SeverityPredictor.from_artifact(review_margin=settings.review_margin)
+                logger.info("Severity model: TF-IDF")
             app.state.finder = DuplicateFinder.from_artifacts()
             logger.info("Models loaded.")
-            app.state.defaults = build_defaults(settings, app.state.finder)
+            app.state.defaults = build_defaults(effective, app.state.finder)
         if app.state.db is not None and (app.state.severity is not None or app.state.finder is not None):
             try:
                 saved = await settings_repo.get_saved(app.state.db)

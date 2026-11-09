@@ -18,6 +18,8 @@ const ReportDetailPage = lazy(() => import('./pages/ReportDetailPage'))
 const ReportsPage = lazy(() => import('./pages/ReportsPage'))
 const SettingsPage = lazy(() => import('./pages/SettingsPage'))
 const UploadPage = lazy(() => import('./pages/UploadPage'))
+const TryItPage = lazy(() => import('./pages/TryItPage'))
+const EvaluatePage = lazy(() => import('./pages/EvaluatePage'))
 const UsersPage = lazy(() => import('./pages/UsersPage'))
 
 // Har page apne hisse (chunk) mein load hota hai. Layout (menu) hamesha nazar aata hai,
@@ -142,6 +144,22 @@ export default function App() {
               <Page>
                 <AccountPage />
               </Page>
+            }
+          />
+          <Route
+            path="try"
+            element={
+              <Page>
+                <TryItPage />
+              </Page>
+            }
+          />
+          <Route
+            path="evaluate"
+            element={
+              <AdminPage>
+                <EvaluatePage />
+              </AdminPage>
             }
           />
           <Route

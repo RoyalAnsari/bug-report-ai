@@ -73,6 +73,9 @@ bug-report-ai/
 ├── .github/workflows/ci.yml    # automatic checks on GitHub
 ├── docker-compose.yml          # run backend and frontend in Docker on your computer
 ├── DEPLOY.md                   # deployment guide
+├── docs/GITHUB_INTEGRATION.md  # how to connect GitHub issues
+├── DEMO_SCRIPT.md, FINAL_WEEK.md  # live demo script and the last-week plan
+├── PRIVACY.md, SECURITY.md, LICENSE
 ├── sample_data/                # small example CSV files for testing the upload page
 └── README.md
 ```
@@ -115,6 +118,9 @@ The severity labels are: `blocker`, `critical`, `major`, `normal`, `minor`, `tri
 - Bulk severity prediction (see [Bulk predict](#bulk-predict)).
 - Duplicate candidates for a report, and a duplicate review queue.
 - Dashboard numbers.
+- **Try it** (`POST /api/v1/triage`): severity, confidence and similar earlier bugs for a title you type. Nothing is saved.
+- **Evaluate** (`POST /api/v1/evaluate`, admins): upload a labelled CSV and get accuracy, macro F1, a score for each severity and a confusion matrix. Nothing is saved.
+- **GitHub integration** (`POST /api/v1/integrations/github/webhook`): labels and comments new issues (see [docs/GITHUB_INTEGRATION.md](docs/GITHUB_INTEGRATION.md)).
 - Settings (review margin and duplicate defaults).
 - Login with email and password (passwords are hashed with Argon2, sessions use signed tokens that expire), and two roles: **admin** and **reviewer** (see [Login and roles](#login-and-roles)).
 - Consistent error format, CORS, security headers, and OpenAPI docs (off by default, see `ENABLE_DOCS`).
@@ -122,6 +128,8 @@ The severity labels are: `blocker`, `critical`, `major`, `normal`, `minor`, `tri
 **Frontend (React)**
 
 - **Dashboard**: totals, severity chart, pending reviews, duplicate suggestions.
+- **Try it**: write a bug title, get a suggested severity, how sure the model is, and similar earlier bugs.
+- **Evaluate** (admins): check the model on your own labelled CSV.
 - **Reports**: search, filters, sorting, pagination, detail page with *Predict severity* and *Review*.
 - **Upload**: drag and drop, preview, column mapping, row errors, import.
 - **Bulk predict**: predict all reports that have no prediction yet, with progress and a Stop button.
@@ -187,6 +195,10 @@ Settings in `backend\.env`:
 | `LOCKOUT_MINUTES` | How long a locked account stays locked | `15` |
 | `ENABLE_DOCS` | Serves `/docs`, `/redoc` and `/openapi.json`. Use `true` only in development | `false` |
 | `ENABLE_HSTS` | Sends the HSTS header. Turn it on when the site is served over HTTPS | `false` |
+| `SEVERITY_MODEL` | Which model predicts severity: `tfidf` (version 1) or `transformer` (version 2, needs `ml\artifacts\severity_transformer`) | `tfidf` |
+| `TRANSFORMER_REVIEW_MARGIN` | Only for the transformer: predictions whose confidence gap is below this (0 to 1) are marked *Needs review*. Leave empty to use `review_margin.json` from `ml/src/calibrate_review_margin.py` | (empty) |
+| `GITHUB_WEBHOOK_SECRET` | Secret for the GitHub webhook (at least 16 characters). Empty switches the GitHub integration off | (empty) |
+| `GITHUB_TOKEN` | GitHub token with Issues read and write permission on one repository | (empty) |
 
 Create a `JWT_SECRET` with:
 
@@ -387,6 +399,8 @@ Backend endpoints:
 - Severity model quality is low (macro F1 about 0.42), especially for `major`, `minor` and `trivial`.
 - Duplicate detection is untested against labelled data; precision and recall are unknown.
 - Backend tests use fakes; there are no integration tests against a real MongoDB yet.
+- Only GitHub is connected (labels and one comment on new issues). Jira and Bugzilla are not. There are no separate teams (every user sees the same reports).
+- The model only sees the short title of a report, and was trained on public Bugzilla and Eclipse bugs that were all marked fixed, so results on another team's bugs are not proven. The Evaluate page is there to test that.
 - The Docker files, the GitHub Actions checks and the deployment guide ([DEPLOY.md](DEPLOY.md)) are written, but the app has not been deployed to a real host yet.
 
 ## Roadmap
